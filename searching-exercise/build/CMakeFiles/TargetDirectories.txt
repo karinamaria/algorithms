@@ -1,2 +1,0 @@
-C:/Users/KEILA PATRICIA/Documents/edbi-2020.6/searching-exercise/build/CMakeFiles/edit_cache.dir
-C:/Users/KEILA PATRICIA/Documents/edbi-2020.6/searching-exercise/build/CMakeFiles/rebuild_cache.dir
