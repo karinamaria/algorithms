@@ -14,9 +14,10 @@ namespace sa {
      */
     value_type * lsearch( value_type * first, value_type * last, value_type value )
     {
-        // TODO: Insert here your solution for the linear search problem.
-
-        return first; // stub, not valid.
+        while(first != last and *first != value){
+            first++;
+	    }
+	    return first;
     }
 
     /*!
@@ -28,9 +29,21 @@ namespace sa {
      */
     value_type * bsearch( value_type * first, value_type * last, value_type value )
     {
-        // TODO: Insert here your solution for the binary search problem.
-
-        return first; // stub, not valid.
+        value_type step, *mid;
+        value_type count = last-first;
+        while(count != 0){
+            step = count/2;
+            mid = first+ step;
+            if(*mid == value){
+                return mid;
+            }else if(*mid < value) {
+                first = mid+1;
+                count = count - (step+1);
+            }
+            else
+                count = step;
+        }
+        return first;
     }
 
     /*!
@@ -42,8 +55,19 @@ namespace sa {
      */
     value_type * lbound( value_type * first, value_type * last, value_type value )
     {
-        // TODO: Insert here your solution for the lower bound problem.
-        return first; // stub, not valid.
+        value_type step, *mid;
+        value_type count = last-first;
+        while(count != 0){
+            step = count/2;
+            mid = first+ step;
+            if(*mid >= value) 
+                count = step;
+            else{
+                first = mid+1;
+                count = count - (step+1);
+            }
+        }
+        return first;
     }
 
     /*!
@@ -55,9 +79,18 @@ namespace sa {
      */
     value_type * ubound( value_type * first, value_type * last, value_type value )
     {
-        // TODO: Insert here your solution for the upper bound problem.
-
-        return first; // stub, not valid.
+        value_type step, *mid;
+        value_type count = last-first;
+        while(count != 0){
+            step = count/2;
+            mid = first+ step;
+            if(!(value<*mid)){
+                first = mid+1;
+                count = count - (step+1); 
+            }else
+                count = step;
+        }
+        return first;
     }
 }
 
