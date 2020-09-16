@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
+#include <tuple>
 
-#define SIZE 3
+#define SIZE 2
 
 void printArray(int *first, int *last){
 	std::cout << "\nArray [ ";
@@ -104,6 +105,41 @@ int* run_q07(int array[], int inicio, int fim){
 	return nullptr;
 }
 
+//recebe o array A
+std::tuple<bool, int, int> run_q11(int A[], size_t array_sz, int value){
+	for(size_t i=0; i<array_sz; i++){
+         for (size_t j=i; j<array_sz; j++){
+            if(i!=j && (A[i]+A[j]) == value){
+               return std::make_tuple(true, i, j);
+            }
+         }
+      }
+
+	return std::make_tuple(false, -1, -1);
+}
+
+void q11(){
+	bool existSoma = false;
+
+	size_t numeroElementos = 5;
+	int A[numeroElementos]{0,1,1,2,4};
+	int B[numeroElementos]{3,5,8,9,10};
+
+	std::cout << "-------- ARRAY A --------\n";
+	printArray(A, &A[sizeof(A)/sizeof(A[0])]);
+	std::cout << "-------- ARRAY B --------\n";
+	printArray(B, &B[sizeof(B)/sizeof(B[0])]);
+
+	for(size_t i=0; i<numeroElementos || existSoma; i++){
+		auto tupla = run_q11(A, sizeof(A)/sizeof(A[0]), B[i]);
+		existSoma = std::get<0>(tupla);
+		if(existSoma){
+			std::cout	<< "-------- SOMA ENCONTRADA --------\nOs elementos de indice " << std::get<1>(tupla) << " e " << std::get<2>(tupla)
+						<< " do vetor A resultam no elemento de indice " << i << " do vetor B\n";
+		}
+	}
+}
+
 void q04(){
 	size_t numeroElementos = 5;
 
@@ -128,12 +164,12 @@ int main(){
 
 	int array[numeroElementos]{0,1,1,2,4};
 	
-	int matriz[][SIZE]
+	/**int matriz[][SIZE]
 	{
 		{10, 18, 27},
 		{41, 50, 45},
 		{38, 21, 12},
-	};
+	};**/
 	size_t array_sz{sizeof(array)/sizeof(array[0])};
 
 	/*for(size_t i=0; i<numeroElementos; i++){
@@ -143,7 +179,8 @@ int main(){
 
 	//imprimirResultado(run_q01(array, &array[array_sz]));
 	//imprimirResultado(array, run_q07(array, 0, array_sz));
-	q04();
+	//q04();
+	q11();
 	//printMatriz(matriz);
 	return 0;
 }
