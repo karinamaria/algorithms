@@ -21,7 +21,7 @@ namespace sa {
     }
 
     /*!
-     * Performs a **binary search** for `value` in `[first;last)` and returns a pointer to the location of `value` in the range `[first,last]`, or `last` if no such element is found.
+     * Performs a **binary search iterative** for `value` in `[first;last)` and returns a pointer to the location of `value` in the range `[first,last]`, or `last` if no such element is found.
      * \note The range **must** be sorted.
      * \param first Pointer to the begining of the data range.
      * \param last Pointer just past the last element of the data range.
@@ -44,6 +44,29 @@ namespace sa {
                 count = step;
         }
         return first;
+    }
+
+     /*!
+     * Performs a **binary search recursive** for `value` in `[first;last)` and returns a pointer to the location of `value` in the range `[first,last]`, or `last` if no such element is found.
+     * \note The range **must** be sorted.
+     * \param first Pointer to the begining of the data range.
+     * \param last Pointer just past the last element of the data range.
+     * \param value The value we are looking for.
+     */
+    value_type * bsearchrecursive( value_type * first, value_type * last, value_type value )
+    {
+        value_type *middle = first+(last-first)/2;
+        
+		if((last - first) == 0){
+			return first;
+		}
+		if(*middle == value){
+			return middle;
+		}
+		if(*middle > value){				
+			return bsearchrecursive(first, middle, value);
+		}
+		return bsearchrecursive(middle+1, last, value);
     }
 
     /*!

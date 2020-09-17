@@ -132,6 +132,26 @@ void q04(){
 	}
 }
 
+
+int * bsearchrecursive( int *first, int *last, int value )
+    {
+		int *middle = first+(last-first)/2;
+        
+		if((last - first) == 0){
+			return first;
+		}
+		if(*middle == value){
+			return middle;
+		}
+		if(*middle > value){				
+			return bsearchrecursive(first, middle, value);
+		}
+		return bsearchrecursive(middle+1, last, value);
+		
+		
+    }
+
+
 int main(){
 	srand(time(NULL));
 	size_t numeroElementos = 5;
@@ -150,12 +170,11 @@ int main(){
 	/*for(size_t i=0; i<numeroElementos; i++){
 		array[i]=(rand() % 101);
 	}*/
-	
-
+            
 	//imprimirResultado(run_q01(array, &array[array_sz]));
 	//imprimirResultado(array, run_q07(array, 0, array_sz));
 	//q04();
-	q11();
+	//q11();
 	//printMatriz(matriz);
 	return 0;
 }
