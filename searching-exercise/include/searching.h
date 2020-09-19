@@ -23,8 +23,11 @@ namespace sa {
     /// Linear search.
     value_type * lsearch( value_type * first, value_type * last, value_type value );
 
-    /// Binary search.
+    /// Binary search iterative.
     value_type * bsearch( value_type * first, value_type * last, value_type value );
+
+    // Binary search recursive.
+    value_type * bsearchrecursive( value_type * first, value_type * last, value_type value );
 
     /// Lower bound.
     value_type * lbound( value_type * first, value_type * last, value_type value );
