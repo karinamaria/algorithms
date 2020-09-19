@@ -7,41 +7,69 @@
 
 #include <iostream>
 #include <chrono>
+#include <fstream>
+
+#include "searching.cpp"
+
+#define inicio 100000000
+#define incremento 18000000
+
+void bSearchIterative(int array[]){
+    std::ofstream fileSearch("../pics/bSearchIterative.txt", std::ios::app);
+
+    auto last = inicio;
+    for (size_t i{0}; i<50; ++i){
+         //================================================================================
+        auto start = std::chrono::steady_clock::now();
+       
+        last = (i==0) ? last : last+incremento;
+        sa::bsearch(array, &array[last],-1);
+       
+        //================================================================================
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+
+        std::chrono::duration<double> diff = end - start;
+       
+        fileSearch << &array[last] - array << " "<< std::chrono::duration <double, std::milli> (diff).count()<< std::endl;
+    }
+    last = inicio;
+    fileSearch.close();
+}
+
+void bSearchRecursive(int array[]){
+    std::ofstream fileSearch("../pics/bSearchRecursive.txt", std::ios::app);
+
+    auto last = inicio;
+    for (size_t i{0}; i<50; ++i){
+         //================================================================================
+        auto start = std::chrono::steady_clock::now();
+       
+        last = (i==0) ? last : last+incremento;
+        sa::bsearchrecursive(array, &array[last],-1);
+       
+        //================================================================================
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+
+        std::chrono::duration<double> diff = end - start;
+       
+        fileSearch << &array[last] - array << " "<< std::chrono::duration <double, std::milli> (diff).count()<< std::endl;
+    }
+    last = inicio;
+    fileSearch.close();
+}
 
 int main( void )
 {
+ 
+    int *array = new int[1000000000];//10⁹
 
-    std::cout << ">>> STARTING computation that needs timing, please WAIT.... <<<\n";
-    auto start = std::chrono::steady_clock::now();
-    //================================================================================
+    for(int i{0}; i<1000000000; ++i){
+        array[i] = i;
+    }
 
-    // >>>>>>>>  Put the code that needs timing here  <<<<<<<<<<<< //
-    typedef  int test_t; // The testing type for increment.
-    int a{1};
-    for ( test_t i=std::numeric_limits<test_t>::min() ; i < std::numeric_limits<test_t>::max() ; ++i )
-    // for ( unsigned long long j{0} ; j < std::numeric_limits<unsigned long long>::max() ; ++j )
-    // for ( unsigned long long j{0} ; j < std::numeric_limits<unsigned long long>::max() ; ++j )
-        a *= 2;
+    bSearchIterative(array);
+    bSearchRecursive(array);
 
-    //================================================================================
-    std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
-    std::cout << ">>> ENDING computation that needs timing <<<\n";
-
-    //Store the time difference between start and end
-    // auto diff = end - start;
-    std::chrono::duration<double> diff = end - start;
-
-    // Milliseconds (10^-3)
-    std::cout << "\t\t>>> " << std::chrono::duration <double, std::milli> (diff).count()
-        << " ms" << std::endl;
-
-    // Nanoseconds (10^-9)
-    std::cout << "\t\t>>> " << std::chrono::duration <double, std::nano> (diff).count()
-        << " ns" << std::endl;
-
-    // Seconds
-    auto diff_sec = std::chrono::duration_cast<std::chrono::seconds>(diff);
-    std::cout << "\t\t>>> " << diff_sec.count() << " s" << std::endl;
-
+    delete [] array;
     return EXIT_SUCCESS;
 }

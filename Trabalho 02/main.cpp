@@ -136,18 +136,25 @@ void q04(){
 int * bsearchrecursive( int *first, int *last, int value )
     {
 		int *middle = first+(last-first)/2;
+       	std::cout << "target: "<< value <<" last - first: "<< last-first<< std::endl;
+       	std::cout << "first: "<< *first <<" last: "<< *last<< std::endl;
         
-		if((last - first) == 0){
+		if((last - first) == 0 ){
+			std::cout << "oi" << std::endl;
 			return first;
 		}
+
 		if(*middle == value){
+			std::cout << "middle: "<< *middle << std::endl;
 			return middle;
 		}
 		if(*middle > value){				
 			return bsearchrecursive(first, middle, value);
+		}if(*middle < value){
+			return bsearchrecursive(middle+1, last, value);
 		}
-		return bsearchrecursive(middle+1, last, value);
 		
+		return first;
 		
     }
 
@@ -170,7 +177,16 @@ int main(){
 	/*for(size_t i=0; i<numeroElementos; i++){
 		array[i]=(rand() % 101);
 	}*/
-            
+    
+   	int A[]{ 1, 2, 3, 4, 5, 6, 7 };
+    printArray( std::begin(A), std::end(A) );
+    for ( const auto & e : A )
+        {
+            auto result = bsearchrecursive( std::begin(A), std::end(A), e );
+            ( result == std::end(A) ) ?
+            std::cout << "Search failed!\n" :
+            std::cout << "Located target "<< e <<" element at position " << std::distance( std::begin(A), result ) << std::endl;
+        }
 	//imprimirResultado(run_q01(array, &array[array_sz]));
 	//imprimirResultado(array, run_q07(array, 0, array_sz));
 	//q04();

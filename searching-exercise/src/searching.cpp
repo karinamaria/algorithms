@@ -32,7 +32,7 @@ namespace sa {
         value_type step, *mid;
         value_type count = last-first;
         while(count != 0){
-            step = count/2;
+            step = (count)/2;
             mid = first+ step;
             if(*mid == value){
                 return mid;
@@ -40,10 +40,11 @@ namespace sa {
                 first = mid+1;
                 count = count - (step+1);
             }
-            else
+            else{
                 count = step;
+            }
         }
-        return first;
+        return last;
     }
 
      /*!
@@ -55,9 +56,29 @@ namespace sa {
      */
     value_type * bsearchrecursive( value_type * first, value_type * last, value_type value )
     {
-        value_type *middle = first+(last-first)/2;
+        value_type size = last-first;
+        value_type *middle = first+size/2;
         
-		if((last - first) == 0){
+       if(size != 0){
+            if(*middle == value){
+                return middle;
+            }
+            if(*middle > value){                
+                value_type *result = bsearchrecursive(first, middle, value);
+                if(value == *result){
+                    return result;
+                }
+                return last;
+            }
+
+            return bsearchrecursive(middle+1, last, value);
+
+       }
+       return last;
+        
+        /**value_type *middle = first+(last-first)/2;
+        
+		if(first >= last){
 			return first;
 		}
 		if(*middle == value){
@@ -66,7 +87,7 @@ namespace sa {
 		if(*middle > value){				
 			return bsearchrecursive(first, middle, value);
 		}
-		return bsearchrecursive(middle+1, last, value);
+		return bsearchrecursive(middle+1, last, value);**/
     }
 
     /*!
