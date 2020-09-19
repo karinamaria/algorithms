@@ -1,5 +1,17 @@
 /*
  */
+/**
+cmake version 3.16.3
+g++ (Ubuntu 9.3.0-10ubuntu2) 9.3.0
+gnuplot 5.2
+Ubuntu 20.04.1 LTS
+64 bits
+Versão do GNOME 3.36.3
+
+Processador: AMD® C-60 apu with radeon(tm) hd graphics × 2
+Memória RAM: 3,3 GiB
+Gráficos: AMD® Palm
+**/
 
 #include <iostream>
 #include "../include/searching.h"
