@@ -4,6 +4,20 @@
 #include <vector>
 #include <tuple>
 
+/**
+
+https://www.geeksforgeeks.org/find-repeating-element-sorted-array-size-n/
+https://algotree.org/algorithms/binary_search/search_number_in_a_rotated_sorted_array/
+https://algotree.org/algorithms/binary_search/duplicates/
+https://www.geeksforgeeks.org/find-the-row-with-maximum-number-1s/
+https://www.geeksforgeeks.org/given-an-array-a-and-a-number-x-check-for-pair-in-a-with-sum-as-x/
+https://practice.geeksforgeeks.org/problems/search-in-a-rotated-array/0
+https://gist.github.com/them0nk/2495155
+https://www.geeksforgeeks.org/search-an-element-in-a-sorted-and-pivoted-array/
+https://www.geeksforgeeks.org/find-duplicates-in-on-time-and-constant-extra-space/
+
+**/
+
 #define SIZE 2
 
 void printArray(int *first, int *last){
