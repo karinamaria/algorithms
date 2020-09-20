@@ -58,6 +58,28 @@ void bSearchRecursive(int array[]){
     fileSearch.close();
 }
 
+void bSearchlinear(int array[]){
+    std::ofstream fileSearch("../pics/bSearchlinear.txt", std::ios::app);
+
+    auto last = inicio;
+    for (size_t i{0}; i<50; ++i){
+         //================================================================================
+        auto start = std::chrono::steady_clock::now();
+       
+        last = (i==0) ? last : last+incremento;
+        sa::lsearch(array, &array[last],-1);
+       
+        //================================================================================
+        std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
+
+        std::chrono::duration<double> diff = end - start;
+       
+        fileSearch << &array[last] - array << " "<< std::chrono::duration <double, std::milli> (diff).count()<< std::endl;
+    }
+    last = inicio;
+    fileSearch.close();
+}
+
 int main( void )
 {
  

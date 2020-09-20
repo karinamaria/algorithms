@@ -26,7 +26,7 @@ namespace sa {
      */
     value_type * lsearch( value_type * first, value_type * last, value_type value )
     {
-        while(first != last and *first != value){
+        while(first != last && *first != value){
             first++;
 	    }
 	    return first;
@@ -87,19 +87,6 @@ namespace sa {
 
        }
        return last;
-        
-        /**value_type *middle = first+(last-first)/2;
-        
-		if(first >= last){
-			return first;
-		}
-		if(*middle == value){
-			return middle;
-		}
-		if(*middle > value){				
-			return bsearchrecursive(first, middle, value);
-		}
-		return bsearchrecursive(middle+1, last, value);**/
     }
 
     /*!
