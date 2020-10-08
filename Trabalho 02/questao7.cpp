@@ -32,7 +32,7 @@ int* run_q07(int array[], int inicio, int fim){
 }
 
 int main(){
-    int array[]{-2,0,1,3,5};
+    int array[]{-10, -5, 0, 3, 7};
     size_t array_sz{sizeof(array)/sizeof(array[0])};
 
     int *result = run_q07(array, 0, array_sz);

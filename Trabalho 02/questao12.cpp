@@ -30,7 +30,6 @@ std::tuple<bool, int, int> run_q12(int A[], size_t array_sz, int value){
 
 std::tuple<bool, int, int, int> q12(int *A, int B[], size_t a_sz, size_t b_sz){
 	bool existSoma = false;
-    std::cout << "A: " << a_sz << " B: " << b_sz << std::endl;
 	std::cout << "-------- ARRAY A --------\n";
 	printArray(A, &A[a_sz]);
 	std::cout << "-------- ARRAY B --------\n";
