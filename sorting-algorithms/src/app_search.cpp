@@ -26,7 +26,7 @@ void run_bubble_sort(value_type *first, value_type *last){
 }
 
 int main(){
-	value_type A[]{4,7,2,5,340};
+	value_type A[]{23,45,293,12,43,1,49};
 
 	//run_insertion_sort(std::begin(A), std::end(A));
 	run_bubble_sort(std::begin(A), std::end(A));

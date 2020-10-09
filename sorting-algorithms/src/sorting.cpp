@@ -45,7 +45,7 @@ namespace sa {
 	void bubblesort( value_type * first, value_type * last){
 		auto it{last};
 	
-		while(it > first){
+		while(it > first+1){
 			for(auto i=first; i<it-1; i++){
 				if(!comp(*i, *(i+1))){
 					std::swap(*i, *(i+1));
