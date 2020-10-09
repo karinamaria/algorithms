@@ -36,4 +36,23 @@ namespace sa {
 			it++;
 		}
 	}
+
+	/*!
+	 *  Performs a **bubble sort** in range `[first;last)`
+	 *  \param first Iterator to the first element in range.
+	 *  \param last Iterator to past the last element in range.
+ 	*/
+	void bubblesort( value_type * first, value_type * last){
+		auto it{last};
+	
+		while(it > first){
+			for(auto i=first; i<it-1; i++){
+				if(!comp(*i, *(i+1))){
+					std::swap(*i, *(i+1));
+				}
+
+			}
+			it -= 1;
+		}
+	}
 }

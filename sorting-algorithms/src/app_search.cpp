@@ -20,10 +20,15 @@ void run_insertion_sort(value_type *first, value_type *last){
 	std::cout << print(first, last) << std::endl;
 }
 
+void run_bubble_sort(value_type *first, value_type *last){
+	bubblesort(first, last);
+	std::cout << print(first, last) << std::endl;
+}
+
 int main(){
-	value_type A[]{23,45,293,12,43,1};
+	value_type A[]{4,7,2,5,340};
 
-	run_insertion_sort(std::begin(A), std::end(A));
-
+	//run_insertion_sort(std::begin(A), std::end(A));
+	run_bubble_sort(std::begin(A), std::end(A));
 	return 0;
 }
