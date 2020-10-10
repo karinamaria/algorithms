@@ -54,7 +54,7 @@ namespace sa {
 		 			  //the last elements are sorted
 		for(auto i=last; i > first+1; i--){
 			for(auto j=first; j<i-1; j++){
-				if(!comp(*j, *(j+1))){
+				if(comp(*(j+1), *j)){
 					std::swap(*j, *(j+1));
 				}
 
@@ -87,6 +87,22 @@ namespace sa {
 			}
 			if(smaller != i){
 				std::swap(*smaller, *i);
+			}
+		}
+	}
+
+	/*!
+	 *  Performs a **shell sort** in range `[first;last)`
+	 *  \param first Iterator to the first element in range.
+	 *  \param last Iterator to past the last element in range.
+ 	*/
+	void shellsort( value_type * first, value_type * last){
+		auto size = std::distance(first, last)/2; // index of element of middle
+		for(auto i=size; i >= 1; i/=2){
+			for(auto j=first; j+i < last; j++){// (j+i) is the next element of comparison
+				if(comp(*(j+i), *j)){
+					std::swap(*(j), *(j+i));
+				}
 			}
 		}
 	}
