@@ -25,10 +25,16 @@ void run_bubble_sort(value_type *first, value_type *last){
 	std::cout << print(first, last) << std::endl;
 }
 
-int main(){
-	value_type A[]{23,45,293,12,43,1,49};
+void run_selection_sort(value_type *first, value_type *last){
+	selectionsort(first, last);
+	std::cout << print(first, last) << std::endl;
+}
 
-	//run_insertion_sort(std::begin(A), std::end(A));
-	run_bubble_sort(std::begin(A), std::end(A));
+int main(){
+	value_type A[]{1006,23,45,293,12,43,1,49};
+
+	run_insertion_sort(std::begin(A), std::end(A));
+	//run_bubble_sort(std::begin(A), std::end(A));
+	//run_selection_sort(std::begin(A), std::end(A));
 	return 0;
 }

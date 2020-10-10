@@ -26,7 +26,14 @@ namespace sa {
 	 *  \param last Iterator to past the last element in range.
  	*/
 	void insertionsort( value_type * first, value_type * last){
-		auto *it{first+1};//store the second element of range `[first;last)`. 
+		for(auto i=first+1; i < last; i++){
+			for(auto j=i; j>first && (*j < *(j-1)); j--){
+				if(comp(*j, *(j-1))){
+					std::swap(*j, *(j-1));
+				}
+			}
+		}
+		/**auto *it{first+1};//store the second element of range `[first;last)`. 
 		while(it < last){
 			for(auto i=it; i>first && (*i < *(i-1)); i--){
 				if(comp(*i, *(i-1))){
@@ -34,7 +41,7 @@ namespace sa {
 				}
 			}
 			it++;
-		}
+		}**/
 	}
 
 	/*!
@@ -43,10 +50,17 @@ namespace sa {
 	 *  \param last Iterator to past the last element in range.
  	*/
 	void bubblesort( value_type * first, value_type * last){
-		auto it{last};//store the last element because after each iteration
+		//auto it{last};//store the last element because after each iteration
 		 			  //the last elements are sorted
-	
-		while(it > first+1){
+		for(auto i=last; i > first+1; i--){
+			for(auto j=first; j<i-1; j++){
+				if(!comp(*j, *(j+1))){
+					std::swap(*j, *(j+1));
+				}
+
+			}
+		}
+		/*while(it > first+1){
 			for(auto i=first; i<it-1; i++){
 				if(!comp(*i, *(i+1))){
 					std::swap(*i, *(i+1));
@@ -54,6 +68,26 @@ namespace sa {
 
 			}
 			it -= 1;
+		}*/
+	}
+
+	/*!
+	 *  Performs a **selection sort** in range `[first;last)`
+	 *  \param first Iterator to the first element in range.
+	 *  \param last Iterator to past the last element in range.
+ 	*/
+	void selectionsort( value_type * first, value_type * last){
+		auto smaller{first};
+		for(auto i=first; i<last-1; i++){
+			smaller = i;
+			for(auto j=i+1; j<last; j++){
+				if(comp(*j,*smaller)){
+					smaller=j;
+				}
+			}
+			if(smaller != i){
+				std::swap(*smaller, *i);
+			}
 		}
 	}
 }
