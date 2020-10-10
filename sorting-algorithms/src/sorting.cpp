@@ -43,7 +43,8 @@ namespace sa {
 	 *  \param last Iterator to past the last element in range.
  	*/
 	void bubblesort( value_type * first, value_type * last){
-		auto it{last};
+		auto it{last};//store the last element because after each iteration
+		 			  //the last elements are sorted
 	
 		while(it > first+1){
 			for(auto i=first; i<it-1; i++){
