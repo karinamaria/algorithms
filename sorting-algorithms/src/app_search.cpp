@@ -9,7 +9,7 @@
 
 using namespace sa;
 
-typedef void (*fuctions_sorting) (value_type *first, value_type *last);
+typedef void (*fuctions_sorting) (value_type*, value_type*);
 
 void print( value_type *first, value_type *last ){
     std::ostringstream oss;
@@ -17,6 +17,11 @@ void print( value_type *first, value_type *last ){
     std::cout << oss.str() << std::endl;
 }
 
+void ordenar(value_type *first, value_type *last, fuctions_sorting function ){
+    function(first, last);
+    print(first, last);
+}
+/**
 void run_insertion_sort(value_type *first, value_type *last){
 	std::cout << "Insertion sort" << std::endl;
 	insertionsort(first, last);
@@ -45,18 +50,18 @@ void run_quick_sort(value_type *first, value_type *last){
 	std::cout << "Quick sort" << std::endl;
 	quicksort(first, last);
 	print(first, last);
-}
+}**/
 
 int main(){
-	fuctions_sorting functions[]{run_insertion_sort, run_bubble_sort, run_selection_sort,
-								run_sheel_sort, run_quick_sort};
+	fuctions_sorting functions[]{insertionsort, bubblesort, selectionsort,
+								shellsort, quicksort};
 	value_type A[]{1006,23,45,293,12,43,1};
 
 	//run_insertion_sort(std::begin(A), std::end(A));
 	//run_bubble_sort(std::begin(A), std::end(A));
 	//run_selection_sort(std::begin(A), std::end(A));
 	for(auto i=0; i<5; i++){
-		functions[i](std::begin(A), std::end(A));
+		ordenar(std::begin(A), std::end(A), functions[i]);
 	}
 	//run_sheel_sort(std::begin(A), std::end(A));
 	return 0;
