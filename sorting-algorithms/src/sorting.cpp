@@ -15,6 +15,7 @@ namespace sa {
 	 *  It's a function that compare two integers
 	 *  \param a the first integer of comparison
 	 *  \param b the second integer of comparison
+	 *  \return true if a < b, false otherwise.
  	*/
 	bool comp( const value_type & a, const value_type & b ){
 		return ( a < b );
@@ -99,11 +100,55 @@ namespace sa {
 	void shellsort( value_type * first, value_type * last){
 		auto size = std::distance(first, last)/2; // index of element of middle
 		for(auto i=size; i >= 1; i/=2){
-			for(auto j=first; j+i < last; j++){// (j+i) is the next element of comparison
+			for(auto j=first; j+i < last; j++){// (j+i) is the next element of comparison with j
 				if(comp(*(j+i), *j)){
 					std::swap(*(j), *(j+i));
 				}
 			}
 		}
 	}
-}
+
+	/*!
+	* Partition reorders the elements in the range [first;last) in such a way that
+	* all elements **less** than the pivot appear before the pivot, and all elements
+	* equal or greater than the pivot appear after the pivot.
+	*
+	* @param first The first element in the range we want to reorder.
+	* @param last Past-the-last element in the range we want to reorder.
+	* @param pivot Location of the pivot element we need to partition the array with.
+	* @return An iterator to the new pivot location within the range.
+	*/
+	value_type * partition( value_type *first, value_type *last, value_type *pivot){
+	    auto slow{first-1}, fast{first};
+	    while(fast != pivot){
+	        if(comp(*fast,*pivot)){//fast < pivot [first, slow)
+	            slow = slow+1;  
+	            std::swap(*fast, *slow);   
+	        }
+	        fast++;
+	        
+	    }
+	    std::swap(*pivot, *(slow+1));
+
+	    return slow;
+	}
+
+	/*!
+	* Quick Sort is a recursive function that makes use of the `partition` function 
+	* to divide the interval [first, last) into two regions: the elements smaller than 
+	* the pivot and the elements greater than or equal to the pivot. Each of these regions 
+	* is ordered by recursive calls to the `partition` function.
+	*
+	* @param first The first element in the range we want to order.
+	* @param last Past-the-last element in the range we want to order.
+	*/
+	void quicksort( value_type *first, value_type *last){
+	   value_type n = last-first;
+	   
+	   if(n > 1){
+	   		auto pivot = partition(first, last, last-1);
+	   		quicksort(first, pivot+1);//left
+	        quicksort(pivot+1, last);//right
+	   }
+	}
+}                     

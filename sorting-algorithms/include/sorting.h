@@ -38,6 +38,9 @@ namespace sa {
     /// shell sort.
     void shellsort( value_type * first, value_type * last);
 
+    /// partition for quick sort
+    value_type * partition( value_type *first, value_type *last, value_type * pivot);
+
     /// quick sort.
     void quicksort( value_type * first, value_type * last);
 

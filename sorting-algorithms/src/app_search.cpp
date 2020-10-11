@@ -41,15 +41,21 @@ void run_sheel_sort(value_type *first, value_type *last){
 	print(first, last);
 }
 
+void run_quick_sort(value_type *first, value_type *last){
+	std::cout << "Quick sort" << std::endl;
+	quicksort(first, last);
+	print(first, last);
+}
+
 int main(){
 	fuctions_sorting functions[]{run_insertion_sort, run_bubble_sort, run_selection_sort,
-								run_sheel_sort};
-	value_type A[]{1006,23,45,293,12,43,1,49};
+								run_sheel_sort, run_quick_sort};
+	value_type A[]{1006,23,45,293,12,43,1};
 
 	//run_insertion_sort(std::begin(A), std::end(A));
 	//run_bubble_sort(std::begin(A), std::end(A));
 	//run_selection_sort(std::begin(A), std::end(A));
-	for(auto i=0; i<4; i++){
+	for(auto i=0; i<5; i++){
 		functions[i](std::begin(A), std::end(A));
 	}
 	//run_sheel_sort(std::begin(A), std::end(A));
