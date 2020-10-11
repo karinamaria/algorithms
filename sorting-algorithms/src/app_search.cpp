@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iterator>
 
+#include <random>
+
 #include "../include/sorting.h"
 
 using namespace sa;
@@ -56,7 +58,12 @@ int main(){
 	fuctions_sorting functions[]{insertionsort, bubblesort, selectionsort,
 								shellsort, quicksort};
 	value_type A[]{1006,23,45,293,12,43,1};
-
+	std :: random_device rd ; 
+    std :: mt19937 g ( rd ( ) ) ;
+	std :: shuffle ( std::begin(A), std::end(A), 25 ) ;
+ 	
+    print(std::begin(A), std::end(A));
+    std::cout << "-------------------------" << std::endl;
 	//run_insertion_sort(std::begin(A), std::end(A));
 	//run_bubble_sort(std::begin(A), std::end(A));
 	//run_selection_sort(std::begin(A), std::end(A));
