@@ -151,4 +151,14 @@ namespace sa {
 	        quicksort(pivot+1, last);//right
 	   }
 	}
+
+	void mergesort( value_type * first, value_type * last){
+		value_type n = last-first;
+
+		if(n > 1){
+			auto middle = (last-first)/2;
+			mergesort(first, first+middle);
+			mergesort(first+(middle+1), last);
+		}
+	}
 }                     
