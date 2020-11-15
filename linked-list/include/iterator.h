@@ -4,8 +4,9 @@
 #include "node.h"
 #include "const_iterator.h"
 
-class iterator : public const_iterator {
+class iterator : public const_iterator<T> {
 	public :
+	
 		//======================================================================
         //== Método Especial.
         //----------------------------------------------------------------------
@@ -17,9 +18,9 @@ class iterator : public const_iterator {
         //----------------------------------------------------------------------
 
 		/// Retorna uma referência constante ao objeto localizado na posição apontada pelo iterador
-		const Object & operator*( ) const { return current->data; }
+		const  T& operator*( ) const { return current->data; }
 		/// Retorna uma referência ao objeto localizado na posição apontada pelo iterador
-		Object& operator*( ) { return  current->data};
+		T& operator*( ) { return  current->data; }
 		/// Avança o iterador em uma posição (pré-incremento).
 		iterator& operator++( ){
 			current=current->next; 
@@ -44,7 +45,7 @@ class iterator : public const_iterator {
 		}
 
 	protected :
-		iterator( Node *p ) : const_iterator( p ); //<! Construtor protected
+		iterator( Node *p ) : const_iterator( p ) {} //<! Construtor protected
 		friend class list<Object>; //<! Indicativo que `list` é classe friend
 };
 

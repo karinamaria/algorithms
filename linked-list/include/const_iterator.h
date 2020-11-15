@@ -5,6 +5,8 @@
 
 class const_iterator {
 	public :
+	
+        
 		//======================================================================
         //== Método Especial.
         //----------------------------------------------------------------------
@@ -16,7 +18,7 @@ class const_iterator {
         //----------------------------------------------------------------------
 		
 		/// Retorna uma referência ao objeto localizado na posição apontada pelo iterador
-		const Object&   operator*( ) const { 
+		const T&   operator*( ) const { 
 			return current->data; 
 		}
 		/// Avança o iterador em uma posição (pré-incremento).
@@ -52,7 +54,7 @@ class const_iterator {
 	
 	protected :
 		Node *current; //<! Nó `current`
-		const_iterator( Node* p ) : current( p ); //<! Construtor protected
+		const_iterator( Node* p ) : current( p ) { /**/}//<! Construtor protected
 		friend class list<Object>; //<! Indicativo que `list` é classe friend
 };
 
