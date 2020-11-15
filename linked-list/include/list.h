@@ -25,10 +25,14 @@ namespace sc {
             //----------------------------------------------------------------------
             /// Construtor padrão que cria uma lista vazia.
             list( ){
-
+                m_head = new Node;
+                m_tail = new Node;
+                m_head->next = m_tail;
+                m_tail->prev = m_head;
+                m_size = 0;
             }
             /// Constrói a lista com a contagem de instâncias inseridas por padrão de T.
-            explicit list( size_type count ){
+            explicit list( size_type count = 0 ) : m_size{count}{
 
             }
             /// Constrói a lista com o conteúdo do intervalo [first, last)
@@ -63,25 +67,64 @@ namespace sc {
             //== Métodos Iteradores
             //----------------------------------------------------------------------
             
-            /// Iterador para o ínicio da lista
+            /// Retorna um iterador para o ínicio da lista
             iterator begin( ) {
-                if(size != 0){
+                if(m_size != 0){
                     return iterator(&m_head->next);
                 } 
             }
-            /// Iterador constante para o ínicio do final.
+            /// Retorna um iterador constante para o ínicio do final.
             const_iterator cbegin( ) const{
-                 if(size != 0){
+                 if(m_size != 0){
                     return const_iterator(&m_head->next);
                 } 
             }
-            /// Iterador para o final da lista
+            /// Retorna um iterador para o final da lista
             iterator end( ){
                 return iterator(&m_tail);
             }
-            /// Iterador constante para o final da lista
+            /// Retorna um iterador constante para o final da lista
             const_iterator cend( ) const{
                 return const_iterator(&m_tail);
+            }
+
+            //======================================================================
+            //== Métodos modificadores com Iteradores
+            //----------------------------------------------------------------------
+            
+            //! Adiciona o `value` antes da posição `pos`
+            /*!
+             * @param pos iterador
+             * @param value valor a ser inserindo
+             * @return um iterador para a posição do item inserido.
+             */
+            iterator insert( iterator pos, const T & value ){
+                Node* temp = pos.current;
+                Node* novo = new Node{ value,temp->prev,temp };
+                ++m_size;
+            }
+            template < typename InItr>
+            iterator insert( iterator pos, InItr first, InItr last ){
+
+            }
+            iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
+
+            }
+            iterator erase( iterator pos ){
+
+            }
+            iterator erase( iterator first, iterator last ){
+
+            }
+            void assign( size_type count, const T& value ){
+
+            }
+            template < typename InItr>
+            void assign( InItr first, InItr last ){
+
+            }
+            void assign( std::initializer_list<T> ilist ){
+
             }
         private:
             //== Membro da classe
