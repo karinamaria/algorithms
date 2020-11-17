@@ -84,11 +84,11 @@ namespace sc {
                     /// Avança o iterador em uma posição (pré-incremento).
                     iterator& operator++( ){ this->current=this->current->next; return *this; }
                     /// Avança o iterador em uma posição (pós-incremento).
-                    iterator  operator++( int ){ const_iterator other{*this};  this->current=this->current->next; return other;}
+                    iterator  operator++( int ){ iterator other{*this};  this->current=this->current->next; return other;}
                     /// Decresce o iterador em uma posição (pré-decremento).
                     iterator& operator--( ){ this->current=this->current->prev; return *this; }
                     /// Decresce o iterador em uma posição (pós-decremento).
-                    iterator  operator--( int ){ const_iterator other{*this}; this->current=this->current->prev; return other;}
+                    iterator  operator--( int ){ iterator other{*this}; this->current=this->current->prev; return other;}
 
                     protected :
                         iterator( Node *p ) : const_iterator(p){ /* Empty */ }; //<! Construtor protected
@@ -176,7 +176,10 @@ namespace sc {
             //======================================================================
             //== Métodos modificadores
             //----------------------------------------------------------------------
-            void clear( );
+            /// Remove todos os elementos do vetor
+            void clear( ){
+
+            }
             /// Adiciona `value` no inicio da lista
             void push_front( const T & value ){
                 insert(begin(), value);
@@ -218,15 +221,27 @@ namespace sc {
             }
 
             template < typename InItr>
-            /// Adiciona os elementos do intervalo `[first, last)` para que o iterador `pos` aponta
+            /// Adiciona os elementos do intervalo `[first, last)` antes de `pos`
             iterator insert( iterator pos, InItr first, InItr last ){
 
             }
             iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
 
             }
-            iterator erase( iterator pos ){
 
+            //! Remove o nó para o qual o iterador `pos` aponta
+            /*!
+             * @param pos iterador
+             * @return um iterador para o elemento depois de `pos`
+             */
+            iterator erase( iterator pos ){
+                Node *temp = pos.current;
+                (temp->prev)->next = temp->next;
+                (temp->next)->prev = temp->prev;
+                delete temp;
+                --m_size;
+
+                return pos++;
             }
             iterator erase( iterator first, iterator last ){
 
