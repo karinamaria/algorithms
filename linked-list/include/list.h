@@ -127,7 +127,7 @@ namespace sc {
             }
             /// Destrutor da lista
             ~list( ){
-                //chamar método clear
+                clear();
                 delete m_head; 
                 delete m_tail;
             }
@@ -178,7 +178,9 @@ namespace sc {
             //----------------------------------------------------------------------
             /// Remove todos os elementos do vetor
             void clear( ){
-
+                while(!empty()){
+                    pop_front();
+                }
             }
             /// Adiciona `value` no inicio da lista
             void push_front( const T & value ){
@@ -187,6 +189,22 @@ namespace sc {
             /// Adiciona `value` no fim da lista
             void push_back( const T & value ){
                 insert(end(), value);
+            }
+            /// Remove o elemento do final da lista;
+            void pop_back(){
+                erase(--end());
+            }
+            /// Remove o elemento do início da lista;
+            void pop_front(){
+                erase(begin());
+            }
+            /// Retorna um objeto para o fim da lista
+            const T& back() const{
+                return *(--end());
+            }
+            /// Retorna um objeto para o inicio da lista
+            const T& front() const{
+                return *(begin());
             }
             //======================================================================
             //== Métodos modificadores com Iteradores
@@ -218,6 +236,28 @@ namespace sc {
                 }
                 
                 return iterator(novo);
+            }
+
+            const_iterator insert( const_iterator pos, const T & value ){
+                Node* novo = new Node{ value };
+
+                ++m_size;
+
+                if(pos == end()){
+                    novo->next = m_tail;
+                    novo->prev = m_tail->prev;
+                    (novo->next)->prev = novo;
+                    (novo->prev)->next = novo;
+                }
+                else{
+                    Node *temp = pos.current;
+                    novo->next = temp;
+                    (temp->prev)->next = novo;
+                    novo->prev = temp->prev;
+                    temp->prev = novo;
+                }
+                
+                return const_iterator(novo);
             }
 
             template < typename InItr>
