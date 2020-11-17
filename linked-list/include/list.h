@@ -146,15 +146,13 @@ namespace sc {
             
             /// Retorna um iterador para o ínicio da lista
             iterator begin( ) {
-                if(m_size != 0){
-                    return iterator(m_head->next);
-                } 
+                return iterator(m_head->next);
+                
             }
             /// Retorna um iterador constante para o ínicio do final.
             const_iterator cbegin( ) const{
-                 if(m_size != 0){
-                    return const_iterator(m_head->next);
-                } 
+                return const_iterator(m_head->next);
+                
             }
             /// Retorna um iterador para o final da lista
             iterator end( ){
@@ -174,11 +172,24 @@ namespace sc {
             /// Retorna se a lista está vazia
             bool empty( ) const{ return m_size == 0; }
 
+
+            //======================================================================
+            //== Métodos modificadores
+            //----------------------------------------------------------------------
+            void clear( );
+            /// Adiciona `value` no inicio da lista
+            void push_front( const T & value ){
+                insert(begin(), value);
+            }
+            /// Adiciona `value` no fim da lista
+            void push_back( const T & value ){
+                insert(end(), value);
+            }
             //======================================================================
             //== Métodos modificadores com Iteradores
             //----------------------------------------------------------------------
             
-            //! Adiciona o `value` antes da posição `pos`
+            //! Adiciona o `value` antes da posição para que o iterador `pos` aponta
             /*!
              * @param pos iterador
              * @param value valor a ser inserindo
@@ -187,36 +198,27 @@ namespace sc {
             iterator insert( iterator pos, const T & value ){
                 Node* novo = new Node{ value };
 
-                if(pos == begin()){
-                    novo->next = m_head->next;
-                    m_head->next = novo;
-                    (m_head->next)->prev = novo;
-                    novo->prev = m_head;  
-                }
-                else if(pos == end()){
-                    novo->next = m_tail;
-                    (m_tail->prev)->next = novo;
-                    novo->prev = m_tail->prev;
-                    m_tail->prev=novo;
-                }
-               
-
-                 
-                // }else if(pos == end()){
-                //     m_tail->prev = novo;
-                   
-                // }else{
-                //     Node *no = pos.current;
-                //     no--;
-                //     novo->prev = no--;
-                //     novo->next = no++;
-                // }
-
                 ++m_size;
+
+                if(pos == end()){
+                    novo->next = m_tail;
+                    novo->prev = m_tail->prev;
+                    (novo->next)->prev = novo;
+                    (novo->prev)->next = novo;
+                }
+                else{
+                    Node *temp = pos.current;
+                    novo->next = temp;
+                    (temp->prev)->next = novo;
+                    novo->prev = temp->prev;
+                    temp->prev = novo;
+                }
                 
                 return iterator(novo);
             }
+
             template < typename InItr>
+            /// Adiciona os elementos do intervalo `[first, last)` para que o iterador `pos` aponta
             iterator insert( iterator pos, InItr first, InItr last ){
 
             }
