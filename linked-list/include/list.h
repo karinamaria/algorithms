@@ -409,8 +409,8 @@ namespace sc {
                     
                     current++;
                 }
-                m_size = count;
             }
+            
             /// Substitui o conteudo da lista com cópias do elementos do intervalo `[first, last)
             template < typename InItr>
             void assign( InItr first, InItr last ){
