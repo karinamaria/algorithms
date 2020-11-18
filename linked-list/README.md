@@ -1,5 +1,5 @@
 # Introdução
-O objetivo desse projeto é implementar o `list` da biblioteca stl do c++.
+O objetivo desse projeto é implementar o `list` do c++.
 Listas duplamente encadeadas são listas ligadas por nós. Cada um dos nós possui dois ponteiros de nós que representam o próximo nó e o nó anterior.
 
 # Compilação
@@ -22,6 +22,6 @@ $ ./build/run_tests
 ```
 
 
-# Discentes
+# Discente
 
 - Karina Maria
