@@ -21,5 +21,4 @@ add_executable( driver_search
 # define C++11 standard
 set_property(TARGET driver_search PROPERTY CXX_STANDARD 11)
 
-
 # The end

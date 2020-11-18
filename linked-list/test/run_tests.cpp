@@ -6,7 +6,7 @@
 #include "../lib/test_manager.h"
 #include "../include/list.h"
 
-#define which_lib ls
+#define which_lib sc
 // ============================================================================
 // TESTING list AS A CONTAINER OF INTEGERS
 // ============================================================================

@@ -56,7 +56,7 @@ namespace sc {
                     bool operator== ( const const_iterator & rhs ) const{ return current == rhs.current; }
                     /// Verifica se dois iteradores são diferentes.
                     bool operator!= ( const const_iterator & rhs ) const{ return current != rhs.current; }
-                
+                    
                     protected :
                         Node *current; //<! Nó `current`
                         const_iterator( Node* p ) : current( p ){/* Empty */}; //<! Construtor protected
@@ -241,11 +241,25 @@ namespace sc {
             }
             /// Retorna um objeto para o fim da lista
             const T& back() const{
-                return *(--end());
+                return *(--cend());
             }
             /// Retorna um objeto para o inicio da lista
             const T& front() const{
+                return *(cbegin());
+            }
+            /// Retorna um objeto para o fim da lista
+            T& back(){
+                return *(--end());
+            }
+            /// Retorna um objeto para o inicio da lista
+            T& front(){
                 return *(begin());
+            }
+            /// Substitui o conteúdo da lista com cópia de `value`
+            void assign( const T & value ){
+                for(auto i=begin(); i!=end(); i++){
+                    *i = value;
+                }
             }
             //======================================================================
             //== Métodos modificadores com Iteradores
@@ -308,9 +322,30 @@ namespace sc {
                 return p;
                 
             }
+
+            template < typename InItr>
+            /// Adiciona os elementos do intervalo `[first, last)` antes de `pos`
+            const_iterator insert( const_iterator pos, InItr first, InItr last ){
+                const_iterator p{pos};
+    
+                while(first != last){
+                    p = insert(pos, *first);
+                    first++;
+                }
+                return p;
+                
+            }
+
             /// Adiciona os elementos de `ilist` antes de `pos`
             iterator insert( iterator pos, std::initializer_list<T> ilist ){
                 iterator p;
+                p = insert(pos, ilist.begin(), ilist.end());
+                return p;
+            }
+
+            /// Adiciona os elementos de `ilist` antes de `pos`
+            const_iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
+                const_iterator p;
                 p = insert(pos, ilist.begin(), ilist.end());
                 return p;
             }
@@ -329,6 +364,17 @@ namespace sc {
 
                 return pos++;
             }
+            /// Remove o nó para o qual o iterador `pos` aponta
+            const_iterator erase( const_iterator pos ){
+                Node *temp = pos.current;
+                (temp->prev)->next = temp->next;
+                (temp->next)->prev = temp->prev;
+                delete temp;
+                --m_size;
+
+                return pos++;
+            }
+
             /// Remove elementos do intervalo `[first, last)`
             iterator erase( iterator first, iterator last ){
                 iterator p{first};
@@ -338,15 +384,52 @@ namespace sc {
                 }
                 return p;
             }
-            void assign( size_type count, const T& value ){
 
+            /// Remove elementos do intervalo `[first, last)`
+            const_iterator erase( const_iterator first, const_iterator last ){
+                const_iterator p{first};
+                while(first != last){
+                    p = erase(first);
+                    first++;
+                }
+                return p;
+            }
+
+            /// Substitui o `value` a quantidade de vezes definida pelo `count`
+            void assign( size_type count, const T& value ){
+                iterator current = begin();
+                ///
+                for(auto i=0; i<count; i++){
+                    *current = value;
+                    current++;
+                }
             }
             template < typename InItr>
             void assign( InItr first, InItr last ){
-
+                
             }
             void assign( std::initializer_list<T> ilist ){
+                assign(ilist.begin(), ilist.end());
+            }
+            /// Verifica se duas listas são iguais
+            bool operator==( const list &rhs ){
+                if(size() != rhs.size()){
+                    return false;
+                }
+                const_iterator it_list = cbegin();//const iterator para *this
+                for(auto i = rhs.cbegin(); i != rhs.cend(); i++){
+                    if(*i != *it_list){
+                        return false;
+                    }
+                    it_list++;
+                }
 
+                return true;
+
+            }
+            /// verifica se duas listas são diferentes
+            bool operator!=( const list &rhs ){
+                return !(*this == rhs);
             }
         private:
             //== Membro da classe
