@@ -162,11 +162,17 @@ namespace sc {
             }
             /// Atribui cópia dos elementos de uma lista a outra
             list& operator=( const list& other ){
-
+                clear();
+                for(auto i=other.cbegin(); i != other.cend(); i++){
+                    insert(end(), *i);
+                }
+                return *this;
             }
             /// Atribui os elementos de uma lista inicializadora a lista
             list& operator=( std::initializer_list<T> ilist ){
-
+                clear();
+                insert(end(), ilist);
+                return *this;
             }
 
             //======================================================================
@@ -323,8 +329,14 @@ namespace sc {
 
                 return pos++;
             }
+            /// Remove elementos do intervalo `[first, last)`
             iterator erase( iterator first, iterator last ){
-
+                iterator p{first};
+                while(first != last){
+                    p = erase(first);
+                    first++;
+                }
+                return p;
             }
             void assign( size_type count, const T& value ){
 
