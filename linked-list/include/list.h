@@ -114,11 +114,11 @@ namespace sc {
                 m_tail = new Node;
                 m_head->next = m_tail;
                 m_tail->prev = m_head;
-                m_size = (count < 0) ? 1 : count;
-                
+                m_size = 0;
+
                 T *temp = new T();
-        
-                for(size_type i=0; i<m_size; i++){
+
+                for(size_type i=0; i<count; i++){
                     insert(end(), *temp);
                 }
 
