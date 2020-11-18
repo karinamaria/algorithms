@@ -1,565 +1,529 @@
-#include<iostream>
-#include<list>
-#include <iterator>
-
-
-#include "../lib/test_manager.h"
+#include <iostream>  // cout, endl
+#include <cassert>   // assert()
 #include "../include/list.h"
 
-#define which_lib sc
-// ============================================================================
-// TESTING list AS A CONTAINER OF INTEGERS
-// ============================================================================
+template < typename T = int >
+sc::list<T> createVec( const sc::list<T> & _v )
+{
+    sc::list<T> temp( _v );
+    return _v;
+}
 
+// The vector/iterator driver.
 int main( void )
 {
-    TestManager tm{ "Intlist"};
+    auto n_unit{0};
+    // Unit #1: default constructor
     {
-        BEGIN_TEST(tm,"DefaultConstructor", "default constructor");
-
-        which_lib::list<int> list;
-        
-        EXPECT_EQ( list.size(), 0);
-        EXPECT_TRUE( list.empty() );
+        std::cout << ">>> Unit teste #" << ++n_unit << ": default constructor.\n";
+        sc::list<int> seq;
+        assert( seq.size() == 0 );
+        assert( seq.empty() == true );
+        std::cout << ">>> Passed!\n\n";
     }
 
+    // Unit #2: constructor (size)
     {
-        BEGIN_TEST(tm, "ConstructorSize", "Constructor size");
-
-        which_lib::list<int> list(10);
-
-        EXPECT_EQ(list.size(), 10);
-        EXPECT_FALSE(list.empty());
+        std::cout << ">>> Unit teste #" << ++n_unit << ": constructor(size).\n";
+        sc::list<int> seq(10);
+        assert( seq.size() == 10 );
+        assert( seq.empty() == false );
+        std::cout << ">>> Passed!\n\n";
     }
 
-
+    // Unit #3: initializer list constructor
     {
-        BEGIN_TEST(tm,"ListContructor", "initializer list constructor.");
-       
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        EXPECT_EQ( list.size(), 5 );
-        EXPECT_FALSE( list.empty() );
-
-
-        int i { 0 };
-        for( auto it = list.cbegin() ; it != list.cend() ; ++i )
-            EXPECT_EQ( i+1, *it++ );
-    }   
-     
-    {
-        BEGIN_TEST(tm,"RangeConstructor", "checking constructors with a range of values");
-        // Range = the entire list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2( list.begin(), list.end() );
-        
-        EXPECT_EQ( list2.size(), 5 );
-        EXPECT_FALSE( list.empty() );
-
-        // recover elements to test
-        auto i{1};
-        for( auto e : list2)
-            EXPECT_EQ( e, i++ );
-
-        // Copy only part of the original range.
-        which_lib::list<int> list3( std::next( list.begin(), 1 ), std::next( list.begin(), 3 ) );
-        EXPECT_EQ( list3.size(), 2 );
-        EXPECT_FALSE( list3.empty() );
-
-        auto it2 = std::next( list.begin(), 1 );
-        for (auto it = list3.begin() ; it != list3.end() ; ++it, ++it2 )
-            EXPECT_EQ( *it, *it2 );
-    }
-    
-    {
-        BEGIN_TEST(tm, "CopyConstructor","constructor copy values of another list.");
-            // Range = the entire list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2( list );
-
-        EXPECT_EQ( list2.size(), 5 );
-        EXPECT_FALSE( list2.empty() );
+        std::cout << ">>> Unit teste #" << ++n_unit << ": initializer list constructor.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        assert( seq.size() == 5 );
+        assert( seq.empty() == false );
+        std::cout << ">>> B, begin() = " << *seq.begin() << std::endl;
+        std::cout << ">>> B, end() = " << *seq.end() << std::endl;
 
         // recover elements to test.
+        auto i{0};
+        for ( auto it = seq.begin() ; it != seq.end() ; ++it, ++i )
+            assert( *it == i+1 );
 
+        std::cout << ">>> Size set = " << seq.size() << std::endl;
+        std::cout << ">>> Passed!\n\n";
+        std::cout << ">>> got here (0)\n\n";
+        std::cout << ">>> begin() = " << *seq.begin() << std::endl;
+        std::cout << ">>> end() = " << *seq.end() << std::endl;
+    }
+
+    // Unit #5: range constructor
+    {
+        std::clog << ">>> Unit teste #" << ++n_unit << ": range constructor.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        std::clog << ">>> got here (1)\n\n";
+        sc::list<int> seq2( seq.begin(), seq.end() );
+        std::clog << ">>> got here (2)\n\n";
+        assert( seq2.size() == 5 );
+        assert( seq2.empty() == false );
+
+        // recover elements to test.
         auto i{1};
-        for( auto e : list2 )
-            EXPECT_EQ( e, i++ );
+        for( auto e : seq2 )
+            assert ( e == i++ );
+
+        // Copy only part of the original range.
+        sc::list<int> vec3( std::next( seq.begin(), 1 ), std::next( seq.begin(), 3 ) );
+        auto it2 = std::next( seq.begin(), 1 );
+        for ( auto it = vec3.begin() ; it != vec3.end() ; ++it, ++it2 )
+            assert( *it == *it2 );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+
+    // Unit: copy constructor
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": copy constructor.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        sc::list<int> seq2( seq );
+        assert( seq2.size() == 5 );
+        assert( seq2.empty() == false );
+
+        // recover elements to test.
+        auto i{1};
+        for( auto e : seq2 )
+            assert ( e == i++ );
 
         // Changing seq (the original)...
-        auto it = std::next( list.begin(), 2 );
+        auto it = std::next( seq.begin(), 2 );
         *it = 10;
         // ... should not alter the copy.
         i = 1;
-        for( auto e : list2 )
-            EXPECT_EQ( e, i++ );
+        for( auto e : seq2 )
+            assert ( e == i++ );
+
+        std::cout << ">>> Passed!\n\n";
     }
+
+    // Unit: move constructor
 #ifdef MOVE_SYNTAX_IMPLEMENTED
-
-    // {
-    //     BEGIN_TEST(tm, "Molistonstructor", "move the elements from another");
-    //     // Range = the entire list.
-    //     which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-    //     which_lib::list<int> list2( std::move( list ) );
-        
-    //     EXPECT_EQ( list2.size(), 5 );
-    //     // EXPECT_FALSE( list2.empty() );
-
-    //     // CHeck whether the copy worked.
-    //     for( auto i{0u} ; i < list2.size() ; ++i )
-    //         EXPECT_EQ( i+1, list2[i] );
-    // }
-#endif
-
-
     {
-        BEGIN_TEST(tm, "AssignOperator", "ASSIGN OPERATOR");
-        // Range = the entire list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2;
-
-        list2 = list;
-        EXPECT_EQ( list2.size(), 5 );
-        EXPECT_FALSE( list2.empty() );
+        std::cout << ">>> Unit teste #" << ++n_unit << ": move constructor.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        sc::list<int> seq2( std::move( seq ) );
+        assert( seq2.size() == 5 );
+        assert( seq2.empty() == false );
 
         // recover elements to test.
         auto i{1};
-        for( auto e : list2 )
-            EXPECT_EQ ( e,i++ );;
+        for( auto e : seq2 )
+            assert ( e == i++ );
+
+        std::cout << ">>> Passed!\n\n";
     }
-
- #ifdef MOVE_SYNTAX_IMPLEMENTED  
-    // // {
-    // //     BEGIN_TEST(tm, "MoveAssignOperator", "MoveAssignOperator");
-    // //     // Range = the entire list.
-    // //     which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-    // //     which_lib::list<int> list2;
-
-    // //     list2 = std::move( list );
-    // //     EXPECT_EQ( list2.size(), 5 );
-    // //     EXPECT_FALSE( list2.empty() );
-    // //     EXPECT_EQ( list.size(), 0 );
-    // //     EXPECT_EQ( list.capacity(), 0 );
-    // //     EXPECT_TRUE( list.empty() );
-
-    // //     // CHeck whether the copy worked.
-    // //     for( auto i{0u} ; i < list2.size() ; ++i )
-    // //         EXPECT_EQ( i+1, list2[i] );
-    // // }
 #endif
 
-
+    // Unit: Assign operator.
     {
-        BEGIN_TEST(tm, "ListInitializerAssign","initializer list assignment");
-        // Range = the entire list.
-        which_lib::list<int> list = { 1, 2, 3, 4, 5 };
+        std::cout << ">>> Unit teste #" << ++n_unit << ": assign operator.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        sc::list<int> seq2;
 
-        EXPECT_EQ( list.size(), 5 );
-        EXPECT_FALSE( list.empty() );
+        seq2 = seq;
+        assert( seq2.size() == 5 );
+        assert( seq2.empty() == false );
 
         // recover elements to test.
         auto i{1};
-        for( auto e : list )
-            EXPECT_EQ ( e, i++ );
+        for( auto e : seq2 )
+            assert ( e == i++ );
+
+        std::cout << ">>> Passed!\n\n";
     }
 
+    // Unit: Move assign operator.
+#ifdef MOVE_SYNTAX_IMPLEMENTED
+    // 
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": move assign operator.\n";
+        sc::list<int> seq{ 1, 2, 3, 4, 5 };
+        sc::list<int> seq2;
+
+        seq2 = std::move( seq );
+        assert( seq2.size() == 5 );
+        assert( seq2.empty() == false );
+        assert( seq.size() == 0 );
+        assert( seq.empty() == true );
+
+        // recover elements to test.
+        auto i{1};
+        for( auto e : seq2 )
+            assert ( e == i++ );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+#endif
 
     {
-        BEGIN_TEST(tm, "Clear", "clear");
-        // Range = the entire list.
-        which_lib::list<int> list = { 1, 2, 3, 4, 5 };
+        std::cout << ">>> Unit teste #" << ++n_unit << ": initializer list assignment.\n";
+        sc::list<int> seq = { 1, 2, 3, 4, 5 };
 
-        EXPECT_EQ( list.size(), 5 );
-        EXPECT_FALSE( list.empty() );
+        assert( seq.size() == 5 );
+        assert( seq.empty() == false );
 
-        list.clear();
+        // recover elements to test.
+        auto i{1};
+        for( auto e : seq )
+            assert ( e == i++ );
 
-        EXPECT_EQ( list.size(), 0 );
-        EXPECT_TRUE( list.empty() );
+        std::cout << ">>> Passed!\n\n";
     }
 
     {
-        BEGIN_TEST(tm, "PushFront","PushFront");
-        // #1 From an empty list.
-        which_lib::list<int> list;
+        std::cout << ">>> Unit teste #" << ++n_unit << ": clear().\n";
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
 
-        EXPECT_TRUE( list.empty() );
-        for ( auto i{0} ; i < 5 ; ++i )
-        {
-            list.push_front( i+1 );
-            EXPECT_EQ( list.size(),  i+1 );
-        }
-        EXPECT_FALSE( list.empty() );
+        assert( seq.size() == 5 );
+        assert( seq.empty() == false );
 
-        auto i{5};
-        for ( const auto & e: list )
-            EXPECT_EQ( e , i-- );
+        seq.clear();
+        assert( seq.size() == 0 );
+        assert( seq.empty() == true );
 
+        std::cout << ">>> Passed!\n\n";
+    }
 
-        // REmove all elements.
-        list.clear();
-        EXPECT_TRUE(list.empty()  );
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": push_front().\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq;
+
+        assert( seq.empty() == true );
         for ( auto i{0u} ; i < 5 ; ++i )
         {
-            list.push_front( i+1 );
-            EXPECT_EQ( list.size(),  i+1 );
+            seq.push_front( i+1 );
+            assert( seq.size() == i+1 );
         }
-        EXPECT_FALSE( list.empty() );
+        assert( seq.empty() == false );
 
-        i = 5;
-        for ( const auto & e: list )
+        auto i{5};
+        for ( const auto & e: seq )
+            assert( e == i-- );
+
+        seq.clear();
+        assert( seq.empty() == true );
+        for ( auto i{0u} ; i < 5 ; ++i )
         {
-            EXPECT_EQ( e , i-- );
+            seq.push_front( i+1 );
+            assert( seq.size() == i+1 );
         }
-            
+        assert( seq.empty() == false );
+        i = 5;
+        for ( const auto & e: seq )
+            assert( e == i-- );
+
+        std::cout << ">>> Passed!\n\n";
     }
 
-
     {
-        BEGIN_TEST(tm, "PushBack", "PushBack");
-        // #1 From an empty list.
-        which_lib::list<int> list;
+        std::cout << ">>> Unit teste #" << ++n_unit << ": push_back().\n";
 
-        EXPECT_TRUE( list.empty() );
-        for ( auto i{0} ; i < 5 ; ++i )
+        // #1 From an empty vector.
+        sc::list<int> seq;
+
+        assert( seq.empty() == true );
+        for ( auto i{0u} ; i < 5 ; ++i )
         {
-            list.push_back( i+1 );
-            EXPECT_EQ( list.size(),  i+1 );
+            seq.push_back( i+1 );
+            assert( seq.size() == i+1 );
         }
-        EXPECT_FALSE( list.empty() );
+        assert( seq.empty() == false );
 
         auto i{0};
-        for ( const auto & e: list )
-            EXPECT_EQ( e , ++i );
+        for ( const auto & e: seq )
+            assert( e == ++i );
 
-        // REmove all elements.
-        list.clear();
-        EXPECT_TRUE( list.empty()  );
-        for ( auto i{0} ; i < 5 ; ++i )
+        seq.clear();
+        assert( seq.empty() == true );
+        for ( auto i{0u} ; i < 5 ; ++i )
         {
-            list.push_back( i+1 );
-            EXPECT_EQ( list.size(),  i+1 );
+            seq.push_back( i+1 );
+            assert( seq.size() == i+1 );
         }
-        EXPECT_FALSE( list.empty() );
-        
-        i=0;
-        for ( const auto & e: list )
-            EXPECT_EQ( e , ++i );
+        assert( seq.empty() == false );
+        i = 0;
+        for ( const auto & e: seq )
+            assert( e == ++i );
+
+        std::cout << ">>> Passed!\n\n";
     }
 
     {
-        BEGIN_TEST(tm, "PopBack", "PopBack");
-        // #1 From an empty list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
+        std::cout << ">>> Unit teste #" << ++n_unit << ": pop_back().\n";
 
-        while( not list.empty() )
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+
+        while( not seq.empty() )
         {
-            list.pop_back();
+            seq.pop_back();
             // Checke whether we have the same list except for the last.
             auto i {0};
-            for ( const auto & e: list )
-                EXPECT_EQ( e , ++i );
+            for ( const auto & e: seq )
+                assert( e == ++i );
         }
+
+        std::cout << ">>> Passed!\n\n";
     }
-    
+
     {
-        BEGIN_TEST(tm, "PopFront", "PopFront");
-        // #1 From an empty list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
+        std::cout << ">>> Unit teste #" << ++n_unit << ": pop_front().\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
 
         auto start{1};
-        while( not list.empty() )
+        while( not seq.empty() )
         {
-            list.pop_front();
-            // Checke whether we have the same list except for the last.
+            seq.pop_front();
+            // Check whether we have the same list except for the first.
             auto i {start};
-            for ( const auto & e: list )
-                EXPECT_EQ( e, ++i );
+            for ( const auto & e: seq )
+                assert( e == ++i );
+
             start++;
         }
+
+        std::cout << ">>> Passed!\n\n";
     }
 
-
     {
-        BEGIN_TEST(tm, "Front", "front");
-        // #1 From an empty list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
+        std::cout << ">>> Unit teste #" << ++n_unit << ": front().\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
 
         auto i{0};
-        while( not list.empty() )
+        while( not seq.empty() )
         {
-            auto current_size = list.size();
-            EXPECT_EQ( list.front(), ++i );
-            EXPECT_EQ( current_size, list.size() );
-            list.pop_front();
+            assert( seq.front() == ++i );
+            seq.pop_front();
         }
+
+        std::cout << ">>> Passed!\n\n";
     }
 
     {
-        BEGIN_TEST(tm, "FrontConst","FrontConst");
-        // #1 From an empty list.
-        const which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        EXPECT_EQ( list.front(), 1 );
+        std::cout << ">>> Unit teste #" << ++n_unit << ": back().\n";
 
-        const which_lib::list<char> list2{ 'a', 'e', 'i', 'o', 'u' };
-        EXPECT_EQ( list2.front(), 'a' );
-    }
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
 
-
-    {
-        BEGIN_TEST(tm, "Back","Back");
-        // #1 From an empty list.
-        which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-    
         auto i{5};
-        while( not list.empty() )
+        while( not seq.empty() )
         {
-            auto current_size = list.size();
-            EXPECT_EQ( list.back(), i-- );
-            EXPECT_EQ( current_size, list.size() );
-            list.pop_back();
+            assert( seq.back() == i-- );
+            seq.pop_back();
         }
-    }
-    
-    
-    {
-        BEGIN_TEST(tm, "BackConst","BackConst");
-        // #1 From an empty list.
-        const which_lib::list<int> list{ 1, 2, 3, 4, 5 };
-        EXPECT_EQ( list.back(), 5 );
-    
-        const which_lib::list<char> list2{ 'a', 'e', 'i', 'o', 'u' };
-        EXPECT_EQ( list2.back(), 'u' );
+
+        std::cout << ">>> Passed!\n\n";
     }
 
-    
-    
-    // {
-    //     BEGIN_TEST(tm, "AssignCountValue","AssignCountValue");
-    //     // #1 From an empty list.
-    //     which_lib::list<long> list{ 1, 2, 3, 4, 5 };
-    
-    //     EXPECT_EQ( list.size(), 5 );
-            
-    //     // Test assign with a count smaller than the original list size.
-    //     long value{-4};
-    //     list.assign( 3, value );
-    //     EXPECT_EQ( list.size(), 3 );
-    //     // Capacity should be the same.
-    //     // EXPECT_EQ( list.capacity(), original_cap );
-    //     // Verify the elements.
-    //     for ( auto i{0u} ; i < list.size() ; ++i )
-    //         EXPECT_EQ( value, list[i] );
-    
-    //     // Test assign with a count GREATER than the original list size.
-    //     long new_value{42};
-    //     list.assign( 10, new_value );
-    //     EXPECT_EQ( list.size(), 10 );
-    //     EXPECT_GE( list.capacity(), original_cap );
-    //     // Verify the elements.
-    //     for ( auto i{0u} ; i < list.size() ; ++i )
-    //         EXPECT_EQ( new_value, list[i] );
-    // }
-    
-    
-    {
-        BEGIN_TEST(tm, "OperatorEqual","OperatorEqual");
-        // #1 From an empty list.
-        which_lib::list<int> list { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list3 { 1, 2, 8, 4, 5 };
-        which_lib::list<int> list4 { 8, 4, 5 };
-    
-        EXPECT_EQ( list , list2 );
-        EXPECT_TRUE( not ( list == list3 ) );
-        EXPECT_TRUE( not ( list == list4 ) );
-    }
-    
-    
-    {
-        BEGIN_TEST(tm, "OperatorDifferent","OperatorDifferent");
-        // #1 From an empty list.
-        which_lib::list<int> list { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list3 { 1, 2, 8, 4, 5 };
-        which_lib::list<int> list4 { 8, 4, 5 };
-    
-        EXPECT_TRUE( not( list != list2 ) );
-        EXPECT_NE( list, list3 );
-        EXPECT_NE( list,list4 );
-    }
-    
-    
-    {
-        BEGIN_TEST(tm, "InsertSingleValueAtPosition","InsertSingleValueAtPosition");
-        // #1 From an empty list.
-        which_lib::list<int> list { 1, 2, 4, 5, 6 };
-    
-        // Insert at front
-        list.insert( list.begin(), 0 );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 0, 1, 2, 4, 5, 6 } ) );
 
-        // Insert in the middle
-        list.insert( std::next(list.begin(),3), 3 );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 0, 1, 2, 3, 4, 5, 6 } ) );
-
-        // Insert at the end
-        list.insert( list.end(), 7 );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 0, 1, 2, 3, 4, 5, 6, 7 } ) );
-
-    }
-    
-    
     {
-        BEGIN_TEST(tm, "InsertRange","InsertRange");
+        std::cout << ">>> Unit teste #" << ++n_unit << ": operator==().\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+        sc::list<int> seq2 { 1, 2, 3, 4, 5 };
+        sc::list<int> vec3 { 1, 2, 8, 4, 5 };
+        sc::list<int> vec4 { 8, 4, 5 };
+
+        assert( seq == seq2 );
+        assert( not ( seq == vec3 ) );
+        assert( not ( seq == vec4 ) );
+        assert( seq == ( sc::list<int>{ 1, 2, 3, 4, 5 } ) );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": operator!=().\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+        sc::list<int> seq2 { 1, 2, 3, 4, 5 };
+        sc::list<int> vec3 { 1, 2, 8, 4, 5 };
+        sc::list<int> vec4 { 8, 4, 5 };
+
+        assert( not( seq != seq2 ) );
+        assert( seq != vec3 );
+        assert( seq != vec4 );
+        assert( seq != ( sc::list<int>{ 1, 2, 3 } ) );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": insert(pos, value).\n";
+
+        // #1 From an empty vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+
+        seq.insert( seq.begin(), 0 );
+        assert( seq == ( sc::list<int>{ 0, 1, 2, 3, 4, 5 } ) );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": insert(pos, first, last).\n";
+
         // Aux arrays.
-        which_lib::list<int> list1 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> source { 6, 7, 8, 9, 10 };
-    
-        // Inset at the begining.
-        list1.insert( list1.begin(), source.begin(), source.end() );
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 } ) );
+        sc::list<int> seq1 { 1, 2, 3, 4, 5 };
+        sc::list<int> seq2 { 1, 2, 3, 4, 5 };
+        sc::list<int> source { 6, 7, 8, 9, 10 };
+
+        std::cout << ">>> seq1 size is: " << seq1.size() << '\n';
+        // Insert at the begining.
+        seq1.insert( seq1.begin(), source.begin(), source.end() );
+        std::cout << ">>> Seq1 == " << seq1 << std::endl;
+        std::cout << ">>> seq1 size is: " << seq1.size() << '\n';
+        assert( seq1 == ( sc::list<int>{ 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 } ) );
+        std::cout << ">>> Ok\n\n";
 
         // In the middle
-        list1 = list2;
-        list1.insert( std::next( list1.begin(), 2 ), source.begin(), source.end() );
-    
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 6, 7, 8, 9, 10, 3, 4, 5 } ) );
-    
-        // At the end
-        list1 = list2;
-        list1.insert( list1.end(), source.begin(), source.end() );
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } ) );
+        seq1 = seq2;
+        seq1.insert( std::next( seq1.begin(), 2 ), source.begin(), source.end() );
+        std::cout << ">>> Seq1 == " << seq1 << std::endl;
+        std::cout << ">>> seq1 size is: " << seq1.size() << '\n';
+        assert( seq1 == ( sc::list<int>{ 1, 2, 6, 7, 8, 9, 10, 3, 4, 5 } ) );
+        std::cout << ">>> Ok2\n\n";
 
-        // // Outside
-        // list1 = list2;
-        // list1.insert( std::next( list1.end(), 2 ) , source.begin(), source.end() );
-        // EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 3, 4, 5 } ) );
-    
+        // At the end
+        seq1 = seq2;
+        seq1.insert( seq1.end(), source.begin(), source.end() );
+        std::cout << ">>> Seq1 == " << seq1 << std::endl;
+        std::cout << ">>> seq1 size is: " << seq1.size() << '\n';
+        assert( seq1 == ( sc::list<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } ) );
+        std::cout << ">>> Ok3\n\n";
+
+
+        std::cout << ">>> Passed!\n\n";
     }
-    
-    
     {
-        BEGIN_TEST(tm, "InsertInitializarList","InsertInitializarList");
+        std::cout << ">>> Unit teste #" << ++n_unit << ": insert(pos, initializer_list).\n";
+
         // Aux arrays.
-        which_lib::list<int> list1 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> list2 { 1, 2, 3, 4, 5 };
-        which_lib::list<int> source { 6, 7, 8, 9, 10 };
-    
-        // Inset at the begining.
-        list1.insert( list1.begin(), { 6, 7, 8, 9, 10 } );
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 } ) );
-       
-        // In the middle
-        list1 = list2;
-        list1.insert( std::next( list1.begin(), 2 ), { 6, 7, 8, 9, 10 } );
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 6, 7, 8, 9, 10, 3, 4, 5 } ) );
-    
-        // At the end
-        list1 = list2;
-        list1.insert( list1.end(), { 6, 7, 8, 9, 10 } );
-        EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } ) );
+        sc::list<int> seq1 { 1, 2, 3, 4, 5 };
+        sc::list<int> seq2 { 1, 2, 3, 4, 5 };
+        sc::list<int> source { 6, 7, 8, 9, 10 };
 
-        // // Outside
-        // list1 = list2;
-        // list1.insert( std::next( list1.end(), 2 ) , { 6, 7, 8, 9, 10 } );
-        // EXPECT_EQ( list1 , ( which_lib::list<int>{ 1, 2, 3, 4, 5 } ) );
+        // Inset at the begining.
+        seq1.insert( seq1.begin(), { 6, 7, 8, 9, 10 } );
+        assert( seq1 == ( sc::list<int>{ 6, 7, 8, 9, 10, 1, 2, 3, 4, 5 } ) );
+
+        // In the middle
+        seq1 = seq2;
+        seq1.insert( std::next( seq1.begin(), 2 ), { 6, 7, 8, 9, 10 } );
+        assert( seq1 == ( sc::list<int>{ 1, 2, 6, 7, 8, 9, 10, 3, 4, 5 } ) );
+
+        // At the end
+        seq1 = seq2;
+        seq1.insert( seq1.end(), { 6, 7, 8, 9, 10 } );
+        assert( seq1 == ( sc::list<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } ) );
+
+
+        std::cout << ">>> Passed!\n\n";
     }
-    
-    
-    // // {
-    // //     BEGIN_TEST(tm, "AssignCountValue2","AssignCountValue2");
-    // //     // Initial list.
-    // //     which_lib::list<char> list { 'a', 'b', 'c', 'd', 'e' };
-    
-    // //     // assigning count values to which_lib::list, with count < size().
-    // //     list.assign( 3, 'x' );
-    // //     which_lib::list<char> list2 { 'x', 'x', 'x' };
-    // //     //ASSERT_EQ( list , ( which_lib::list<char>{ 'x', 'x', 'x' } ) );
-    // //     EXPECT_EQ( list , list2 );
-    // //     EXPECT_EQ( list.size() , 3 );
-    // //     EXPECT_EQ( list.capacity() , 5 );
-    
-    // //     // assigning count values to which_lib::list, with count , size().
-    // //     list = { 'a', 'b', 'c', 'd', 'e' };
-    // //     list.assign( 5, 'y' );
-    // //     EXPECT_EQ( list , ( which_lib::list<char>{ 'y','y','y','y','y' } ) );
-    // //     EXPECT_EQ( list.size() , 5 );
-    // //     EXPECT_EQ( list.capacity() , 5 );
-    
-    // //     // assigning count values to which_lib::list, with count > size().
-    // //     list = { 'a', 'b', 'c', 'd', 'e' };
-    // //     list.assign( 8, 'z' );
-    // //     EXPECT_EQ( list , ( which_lib::list<char>{ 'z','z','z','z','z','z','z','z' } ) );
-    // //     EXPECT_EQ( list.size() , 8 );
-    // //     EXPECT_EQ( list.capacity() , 8 );
-    // // }
-    
-    
+#ifdef IGNORE_THIS
+// This method has the same signature as the assign( InItr, InItr ) of InItr is an integral type.
+// So, we must block this for a while (until C++11).
     {
-        BEGIN_TEST(tm, "EraseRange","EraseRange");
-        // Initial list.
-        which_lib::list<int> list { 1, 2, 3, 4, 5 };
-    
+        std::cout << ">>> Unit teste #" << ++n_unit << ": assign(count, value).\n";
+
+        // Initial vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+
+        // assigning count values to sc::list, with count < size().
+        seq.assign( 3, -1 );
+        assert( seq == ( sc::list<int>{ -1, -1, -1 } ) );
+        assert( seq.size() == 3 );
+
+        // assigning count values to sc::list, with count == size().
+        seq = { 1, 2, 3, 4, 5 };
+        seq.assign( 5, -1 );
+        assert( seq == ( sc::list<int>{ -1, -1, -1, -1, -1 } ) );
+        assert( seq.size() == 5 );
+
+        // assigning count values to sc::list, with count > size().
+        seq = { 1, 2, 3, 4, 5 };
+        seq.assign( 8, -1 );
+        assert( seq == ( sc::list<int>{ -1, -1, -1, -1, -1, -1, -1, -1 } ) );
+        assert( seq.size() == 8 );
+
+        std::cout << ">>> Passed!\n\n";
+    }
+#endif
+    {
+        std::cout << ">>> Unit teste #" << ++n_unit << ": erase(first, last) and erase(pos).\n";
+
+        // Initial vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+
         // removing a segment from the beginning.
-        auto past_last = list.erase( list.begin(), std::next(list.begin(),3) );
-        EXPECT_EQ( list.begin() , past_last );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 4, 5 } ) );
-        EXPECT_EQ( list.size() , 2 );
-    
+        auto past_last = seq.erase( seq.begin(), std::next(seq.begin(),3) );
+        assert( seq.begin() == past_last );
+        assert( seq == ( sc::list<int>{ 4, 5 } ) );
+        assert( seq.size() == 2 );
+
         // removing at the middle.
-        list = { 1, 2, 3, 4, 5 };
-        past_last = list.erase( std::next(list.begin(),1), std::next(list.begin(),4) );
-        EXPECT_EQ( std::next(list.begin(),1) , past_last );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 1, 5 } ) );
-        EXPECT_EQ( list.size() , 2 );
-    
+        seq = { 1, 2, 3, 4, 5 };
+        past_last = seq.erase( std::next(seq.begin(),1), std::next(seq.begin(),4) );
+        assert( std::next(seq.begin(),1) == past_last );
+        assert( seq == ( sc::list<int>{ 1, 5 } ) );
+        assert( seq.size() == 2 );
+
         // removing a segment that reached the end.
-        list = { 1, 2, 3, 4, 5 };
-        past_last = list.erase( std::next(list.begin(),2), list.end() );
-        EXPECT_EQ( list.end() , past_last );
-    
-        EXPECT_EQ( list , ( which_lib::list<int>{ 1, 2 } ) );
-        EXPECT_EQ( list.size() , 2 );
-        // removing the entire list.
-        list = { 1, 2, 3, 4, 5 };
-        past_last = list.erase( list.begin(), list.end() );
-        EXPECT_EQ( list.end() , past_last );
-        EXPECT_TRUE( list.empty() );
+        seq = { 1, 2, 3, 4, 5 };
+        past_last = seq.erase( std::next(seq.begin(),2), seq.end() );
+        assert( seq.end() == past_last );
+        assert( seq == ( sc::list<int>{ 1, 2 } ) );
+        assert( seq.size() == 2 );
+
+        // removing the entire vector.
+        seq = { 1, 2, 3, 4, 5 };
+        past_last = seq.erase( seq.begin(), seq.end() );
+        assert( seq.end() == past_last );
+        assert( seq.empty() );
+
+        std::cout << ">>> Passed!\n\n";
     }
-    
-    
     {
-        BEGIN_TEST(tm, "ErasePos","ErasePos");
-        // Initial list.
-        which_lib::list<int> list { 1, 2, 3, 4, 5 };
-    
+        std::cout << ">>> Unit teste #" << ++n_unit << ": erase(pos).\n";
+
+        // Initial vector.
+        sc::list<int> seq { 1, 2, 3, 4, 5 };
+
         // removing a single element.
-        list = { 1, 2, 3, 4, 5 };
-        auto past_last = list.erase( list.begin() );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 2, 3, 4, 5 } ) );
-        EXPECT_EQ( list.begin() , past_last );
-        EXPECT_EQ( list.size() , 4 );
-    
+        seq = { 1, 2, 3, 4, 5 };
+        auto past_last = seq.erase( seq.begin() );
+        assert( seq == ( sc::list<int>{ 2, 3, 4, 5 } ) );
+        assert( seq.begin() == past_last );
+        assert( seq.size() == 4 );
+
         // removing a single element in the middle.
-        list = { 1, 2, 3, 4, 5 };
+        seq = { 1, 2, 3, 4, 5 };
+        past_last = seq.erase( std::next(seq.begin(),2) );
+        assert( seq == ( sc::list<int>{ 1, 2, 4, 5 } ) );
+        assert( std::next(seq.begin(),2) == past_last );
+        assert( seq.size() == 4 );
 
-        past_last = list.erase( std::next(list.begin(),2) );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 1, 2, 4, 5 } ) );
-
-        std::cout << " \n";
-        EXPECT_EQ( std::next(list.begin(),2) , past_last );
-        EXPECT_EQ( list.size() , 4 );
-    
         // removing a single element at the end.
-        list = { 1, 2, 3, 4, 5 };
-        past_last = list.erase( std::next(list.begin(),list.size()-1 ) );
-        EXPECT_EQ( list , ( which_lib::list<int>{ 1, 2, 3, 4 } ) );
-        EXPECT_EQ( list.end() , past_last );
-        EXPECT_EQ( list.size() , 4 );
+        seq = { 1, 2, 3, 4, 5 };
+        past_last = seq.erase( std::next(seq.begin(),seq.size()-1 ) );
+        assert( seq == ( sc::list<int>{ 1, 2, 3, 4 } ) );
+        assert( seq.end() == past_last );
+        assert( seq.size() == 4 );
+
+        std::cout << ">>> Passed!\n\n";
     }
 
-        tm.summary();
-        return 0;
-    }
-    
+    return 0;
+}

@@ -30,7 +30,7 @@ namespace sc {
             /*!
              * @brief Definição da classe `const_iterator`
              */
-            class const_iterator {
+            class const_iterator : public std::iterator<std::bidirectional_iterator_tag, T>{
                 public :
                     //======================================================================
                     //== Método Especial.
@@ -116,7 +116,7 @@ namespace sc {
                 m_tail->prev = m_head;
                 m_size = 0;
 
-                T *temp = new T();
+                T *temp = new T();//Variavel temporaria com o valor padrão do tipo T
 
                 for(size_type i=0; i<count; i++){
                     insert(end(), *temp);
@@ -280,22 +280,6 @@ namespace sc {
                 current->prev = novo;
 
                 ++m_size;
-
-                // if(pos == end()){
-                //     novo->next = m_tail;
-                //     novo->prev = m_tail->prev;
-                //     (novo->next)->prev = novo;
-                //     (novo->prev)->next = novo;
-                // }
-                // else{
-                //     std::cout << "AAAA " << std::endl;
-                //     Node *temp = pos.current;
-                //     ///novo->next = temp;
-                //     //(temp->prev)->next = novo;
-                //     //novo->prev = temp->prev;
-                //     //temp->prev = novo;
-                //     std::cout << "BBB " << std::endl;
-                // }
                 
                 return iterator(novo);
             }
@@ -363,7 +347,7 @@ namespace sc {
                 delete temp;
                 --m_size;
 
-                return pos++;
+                return iterator(temp->next);
             }
             /// Remove o nó para o qual o iterador `pos` aponta
             const_iterator erase( const_iterator pos ){
@@ -373,7 +357,7 @@ namespace sc {
                 delete temp;
                 --m_size;
 
-                return pos++;
+                return const_iterator(temp->next);
             }
 
             /// Remove elementos do intervalo `[first, last)`
@@ -401,7 +385,7 @@ namespace sc {
                 iterator current = begin(); //Apontando para lista atual
                 
                 for(size_type i=0; i<count; i++){
-                    if(i > size()){ ///se quiser substituir mais que a qnt de elementos
+                    if(i >= size()){ ///se quiser substituir mais que a qnt de elementos
                         current = insert(current, value);
                     }else{// Nao eh preciso adicionar novo nó, apenas substitui valor
                         *current = value;
@@ -459,7 +443,7 @@ namespace sc {
             }
 
             //======================================================================
-            //== Funções friend.
+            //== Função friend.
             //----------------------------------------------------------------------
 
             /// Retorna fluxo com a representação do vetor em caracteres
