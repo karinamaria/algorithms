@@ -213,9 +213,10 @@ namespace sc {
             //----------------------------------------------------------------------
             /// Remove todos os elementos do vetor
             void clear( ){
-                while(!empty()){
-                    pop_front();
-                }
+                // while(!empty()){
+                //     pop_front();
+                // }
+                erase(begin(), end());
             }
             /// Adiciona `value` no inicio da lista
             void push_front( const T & value ){
@@ -397,16 +398,38 @@ namespace sc {
 
             /// Substitui o `value` a quantidade de vezes definida pelo `count`
             void assign( size_type count, const T& value ){
-                iterator current = begin();
-                ///
-                for(auto i=0; i<count; i++){
-                    *current = value;
+                iterator current = begin(); //Apontando para lista atual
+                
+                for(size_type i=0; i<count; i++){
+                    if(i > size()){ ///se quiser substituir mais que a qnt de elementos
+                        current = insert(current, value);
+                    }else{// Nao eh preciso adicionar novo nó, apenas substitui valor
+                        *current = value;
+                    }
+                    
                     current++;
                 }
+                m_size = count;
             }
+            /// Substitui o conteudo da lista com cópias do elementos do intervalo `[first, last)
             template < typename InItr>
             void assign( InItr first, InItr last ){
+                size_type temp = 0; //temp para armazenar tamanho do intervalo
+                iterator current = begin();
                 
+                while(first != last){
+                    if(temp >= size()){// Sera preciso criar novo no
+                        current = insert(end(), *first);
+                    }else{// apenas substitui o atributo data do iterador
+                        *current = *first;
+                    }
+
+                    temp++; current++; first++;
+                }
+
+                if(size() > temp){// Apaga a outra parte da lista que não foi subtituida
+                    erase(current, end());
+                }
             }
             void assign( std::initializer_list<T> ilist ){
                 assign(ilist.begin(), ilist.end());
@@ -431,6 +454,21 @@ namespace sc {
             bool operator!=( const list &rhs ){
                 return !(*this == rhs);
             }
+
+            //======================================================================
+            //== Funções friend.
+            //----------------------------------------------------------------------
+
+            /// Retorna fluxo com a representação do vetor em caracteres
+            friend std::ostream& operator<<( std::ostream& os, const list<T>& v){
+                os << "[";
+                for (auto i = v.cbegin(); i != v.cend(); i++){
+                    os << " " << *i;
+                }
+                os << " ]";
+                return os;
+            }
+
         private:
             //== Membro da classe
             size_type m_size; //!< Quantidade de elementos na list.
