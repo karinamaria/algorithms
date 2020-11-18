@@ -13,10 +13,6 @@ Para compilar esse projeto com o [cmake](https://cmake.org) siga os passos:
 
 Os executáveis estarão no diretório `build`
 
-
-# Observações
-- A função find() não foi implementada, pq não estava descrita no arquivo de orientação
-
 # Execução
 
 Os testes foram feitos usando o [Google tests](https://github.com/google/googletest/blob/master/googletest/docs/primer.md), faça o download na máquina de execução. E execute:

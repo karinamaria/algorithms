@@ -163,9 +163,10 @@ namespace sc {
             /// Atribui cópia dos elementos de uma lista a outra
             list& operator=( const list& other ){
                 clear();
-                for(auto i=other.cbegin(); i != other.cend(); i++){
-                    insert(end(), *i);
-                }
+                // for(auto i=other.cbegin(); i != other.cend(); i++){
+                //     insert(end(), *i);
+                // }
+                insert(end(), other.cbegin(), other.cend());
                 return *this;
             }
             /// Atribui os elementos de uma lista inicializadora a lista
@@ -213,9 +214,6 @@ namespace sc {
             //----------------------------------------------------------------------
             /// Remove todos os elementos do vetor
             void clear( ){
-                // while(!empty()){
-                //     pop_front();
-                // }
                 erase(begin(), end());
             }
             /// Adiciona `value` no inicio da lista
