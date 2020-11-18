@@ -6,7 +6,7 @@
 int main(){
 	sc::list<int> seq{ 1, 2};
 	sc::list<int> seq2{ 9, 5, 10 };
-	auto a = std::next(seq.begin(), 2);
+	seq2.assign(seq.size(), 99);
     // sc::list<int> seq2;
     // seq2 = { 1, 2, 3, 4, 5 };
     // seq2.erase( seq2.begin(), seq2.end() );

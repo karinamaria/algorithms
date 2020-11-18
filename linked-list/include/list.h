@@ -409,6 +409,9 @@ namespace sc {
                     
                     current++;
                 }
+                if(size() > count){// Apaga a outra parte da lista que não foi subtituida
+                    erase(current, end());
+                }
             }
             
             /// Substitui o conteudo da lista com cópias do elementos do intervalo `[first, last)
