@@ -109,21 +109,50 @@ namespace sc {
                 m_size = 0;
             }
             /// Constrói a lista com a contagem de instâncias inseridas por padrão de T.
-            explicit list( size_type count ) : m_size{count}{
+            explicit list( size_type count ){
+                m_head = new Node;
+                m_tail = new Node;
+                m_head->next = m_tail;
+                m_tail->prev = m_head;
+                m_size = (count < 0) ? 1 : count;
+                
+                T *temp = new T();
+        
+                for(size_type i=0; i<m_size; i++){
+                    insert(end(), *temp);
+                }
 
             }
             /// Constrói a lista com o conteúdo do intervalo [first, last)
             template< typename InputIt >
             list( InputIt first, InputIt last ){
+                m_head = new Node;
+                m_tail = new Node;
+                m_head->next = m_tail;
+                m_tail->prev = m_head;
+                m_size = 0;
 
+                insert(end(),first, last);
             }
             /// Construtor  de cópia
-            list( const list& other ){
+            list( const list &other ){
+                m_head = new Node;
+                m_tail = new Node;
+                m_head->next = m_tail;
+                m_tail->prev = m_head;
+                m_size = 0;
 
+                insert(end(), other.cbegin(), other.cend());
             }
             /// Construtor que recebe uma lista inicializadora.
             list( std::initializer_list<T> ilist ){
-                
+                m_head = new Node;
+                m_tail = new Node;
+                m_head->next = m_tail;
+                m_tail->prev = m_head;
+                m_size = 0;
+
+                insert(end(), ilist);
             }
             /// Destrutor da lista
             ~list( ){
@@ -192,10 +221,16 @@ namespace sc {
             }
             /// Remove o elemento do final da lista;
             void pop_back(){
+                if(empty()){
+                    throw std::runtime_error("A lista está vazia");
+                }
                 erase(--end());
             }
             /// Remove o elemento do início da lista;
             void pop_front(){
+                if(empty()){
+                    throw std::runtime_error("A lista está vazia");
+                }
                 erase(begin());
             }
             /// Retorna um objeto para o fim da lista
@@ -217,56 +252,61 @@ namespace sc {
              * @return um iterador para a posição do item inserido.
              */
             iterator insert( iterator pos, const T & value ){
-                Node* novo = new Node{ value };
+                Node* current = pos.current;
+                Node* novo = new Node{ value, (current->prev), current };
+
+                (current->prev)->next = novo;
+                current->prev = novo;
 
                 ++m_size;
 
-                if(pos == end()){
-                    novo->next = m_tail;
-                    novo->prev = m_tail->prev;
-                    (novo->next)->prev = novo;
-                    (novo->prev)->next = novo;
-                }
-                else{
-                    Node *temp = pos.current;
-                    novo->next = temp;
-                    (temp->prev)->next = novo;
-                    novo->prev = temp->prev;
-                    temp->prev = novo;
-                }
+                // if(pos == end()){
+                //     novo->next = m_tail;
+                //     novo->prev = m_tail->prev;
+                //     (novo->next)->prev = novo;
+                //     (novo->prev)->next = novo;
+                // }
+                // else{
+                //     std::cout << "AAAA " << std::endl;
+                //     Node *temp = pos.current;
+                //     ///novo->next = temp;
+                //     //(temp->prev)->next = novo;
+                //     //novo->prev = temp->prev;
+                //     //temp->prev = novo;
+                //     std::cout << "BBB " << std::endl;
+                // }
                 
                 return iterator(novo);
             }
 
             const_iterator insert( const_iterator pos, const T & value ){
-                Node* novo = new Node{ value };
+                Node* current = pos.current;
+                Node* novo = new Node{ value, (current->prev), current };
+
+                (current->prev)->next = novo;
+                current->prev = novo;
 
                 ++m_size;
-
-                if(pos == end()){
-                    novo->next = m_tail;
-                    novo->prev = m_tail->prev;
-                    (novo->next)->prev = novo;
-                    (novo->prev)->next = novo;
-                }
-                else{
-                    Node *temp = pos.current;
-                    novo->next = temp;
-                    (temp->prev)->next = novo;
-                    novo->prev = temp->prev;
-                    temp->prev = novo;
-                }
-                
                 return const_iterator(novo);
             }
 
             template < typename InItr>
             /// Adiciona os elementos do intervalo `[first, last)` antes de `pos`
             iterator insert( iterator pos, InItr first, InItr last ){
-
+                iterator p{pos};
+    
+                while(first != last){
+                    p = insert(pos, *first);
+                    first++;
+                }
+                return p;
+                
             }
-            iterator insert( const_iterator pos, std::initializer_list<T> ilist ){
-
+            /// Adiciona os elementos de `ilist` antes de `pos`
+            iterator insert( iterator pos, std::initializer_list<T> ilist ){
+                iterator p;
+                p = insert(pos, ilist.begin(), ilist.end());
+                return p;
             }
 
             //! Remove o nó para o qual o iterador `pos` aponta
