@@ -3,10 +3,14 @@
 #include <tuple>
 #include <cassert>
 
+#include "../include/hashtbl.h"
 #include "../include/account.h"
+
+using namespace MyHashTable;
 
 int main(){
 	Account acct("Alex Bastos", 1, 1668, 54321, 1500.f);
+	Account acct2("Alex Bastos", 1, 1668, 54321, 1500.f);
     Account myAccounts[] =
     {
         {"Alex Bastos", 1, 1668, 54321, 1500.f},
@@ -23,6 +27,15 @@ int main(){
     for( auto & e : myAccounts )
         std::cout << e << std::endl;
     std::cout << std::endl;
+    // Cria uma tabela de dispersao com capacidade p 23 elementos
+    HashTbl< Account::AcctKey, Account, KeyHash, KeyEqual > contas( 4 );
 
+    contas.insert( acct.getKey(), acct );
+    HashTbl< Account::AcctKey, Account, KeyHash, KeyEqual > testes;
+    testes = contas;
+    testes.print();
+    std::cout << ">>> Inserindo \"" << acct.m_name << "\"\n";
+    std::cout << ">>> Insercao \n" << testes.at(acct.getKey()) << std::endl;
+    
 	return 0;
 }
