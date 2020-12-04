@@ -63,10 +63,10 @@ namespace MyHashTable {
             /// Construtor que recebe uma lista inicializadora.
             HashTbl( const std::initializer_list< entry_type > & ilist){
                 clear();
-                m_size = ilist.m_size;
+                m_size = ilist.size();
                 m_data_table = new list_type[m_size];
 
-                for(unsigned int i=0; i <= ilist.m_size; i++){
+                for(unsigned int i=0; i <= ilist.size(); i++){
                     for(auto it=ilist.m_data_table[i].begin; it!=ilist.m_data_table[i].end(); it++){
                         insert(it->m_key, it->m_data);
                     }
@@ -86,7 +86,7 @@ namespace MyHashTable {
             /// Atribui os elementos de uma lista inicializadora a lista
             HashTbl& operator=( const std::initializer_list< entry_type > & ilist){
                 clear();
-                for(unsigned int i=0; i <= ilist.m_size; i++){
+                for(unsigned int i=0; i <= ilist.size(); i++){
                     for(auto it=ilist.m_data_table[i].begin; it!=ilist.m_data_table[i].end(); it++){
                         insert(it->m_key, it->m_data);
                     }
@@ -111,7 +111,7 @@ namespace MyHashTable {
             bool insert( const KeyType & k_, const DataType & d_){
                 // calcular fator de carga
                 auto loadFactor = (m_count / m_size);
-                if( loadFactor >= 1.0){ /* chamar rehash() */}
+                if( loadFactor >= 1.0){ rehash(); }
 
                 KeyHash hashFunc;
                 KeyEqual equalFunc;
@@ -164,13 +164,15 @@ namespace MyHashTable {
                 KeyEqual equalFunc;
 
                 auto end = hashFunc(k_)%m_size;
-
-                for(auto i=m_data_table[end].begin; i!= m_data_table[end]; i++){
-                    if(equalFunc(i->m_key, k_)){
-                        m_data_table[end].remove(i);
+                auto aux = m_data_table[end].before_begin();
+                
+                for(auto it=m_data_table[end].begin(); it!= m_data_table[end].end(); it++){
+                    if(equalFunc(it->m_key, k_)){
+                        m_data_table[end].erase_after(aux);
                         m_count--;
                         return true;
                     }
+                    ++aux;
                 }
                 return false;
 
@@ -229,14 +231,13 @@ namespace MyHashTable {
                 DataType d_;
                 insert(k_, d_);
 
-                return d_;
+                return at(k_);
             }
             ///Retorna a qnt de elementos da tabela que estão na lista de colisão associada a chave k_
             size_type count( const KeyType& k_) const{
                 size_type count = 0;
 
                 KeyHash hashFunc;
-                KeyEqual equalFunc;
                 
                 auto end = hashFunc(k_)%m_size;
 
@@ -299,7 +300,24 @@ namespace MyHashTable {
       
         private:
             //=== Métodos privados
-            void rehash();        //!< Change Hash table size if load factor >1.0
+            /// Alterar o tamanho da tabela hash, se o fator de carga for maior que 1.0
+            void rehash(){
+                KeyHash hashFunc;
+
+                unsigned int new_size = next_prime(m_size*2);
+                list_type *new_table = new list_type[new_size];
+
+                for(unsigned int i=0; i<m_size; i++){
+                    for(auto it=m_data_table[i].begin(); it != m_data_table[i].end(); it++){
+                        entry_type new_entry (it->m_key, it->m_data);
+                        auto end = hashFunc(it->m_key)%new_size;
+                        new_table[end].push_front(new_entry);
+                    }
+                }
+                delete [] m_data_table;
+                m_data_table = new_table;
+                m_size = new_size;
+            }
             
         private:
             //=== Membros privados
