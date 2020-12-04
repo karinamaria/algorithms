@@ -25,7 +25,8 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 # Add the test target
 add_executable( run_tests
-                test/run_tests.cpp )
+				"src/account.cpp"
+                "test/run_tests.cpp" )
 target_link_libraries(run_tests ${GTEST_LIBRARIES} pthread)
 
 # define C++11 standard

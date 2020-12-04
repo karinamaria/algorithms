@@ -49,34 +49,32 @@ namespace MyHashTable {
             }
             /// Construtor  de cópia
             HashTbl( const HashTbl& other){
-                clear();
                 m_size = other.m_size;
+                m_count=0;
                 m_data_table = new list_type[m_size];
 
-                for(unsigned int i = 0; i <= other.m_size; i++){
+                for(unsigned int i = 0; i < other.m_size; i++){
                     for(auto it=other.m_data_table[i].begin(); it!=other.m_data_table[i].end(); it++){
                         insert(it->m_key, it->m_data);
                     }
                 }
-                
             }
             /// Construtor que recebe uma lista inicializadora.
             HashTbl( const std::initializer_list< entry_type > & ilist){
-                clear();
                 m_size = ilist.size();
+                m_count=0;
                 m_data_table = new list_type[m_size];
 
-                for(unsigned int i=0; i <= ilist.size(); i++){
-                    for(auto it=ilist.m_data_table[i].begin; it!=ilist.m_data_table[i].end(); it++){
-                        insert(it->m_key, it->m_data);
-                    }
+               for(auto it=ilist.begin(); it!=ilist.end(); it++){
+                    insert(it->m_key, it->m_data);
                 }
+                
 
             }
             /// Atribui cópia dos elementos de uma lista a outra
             HashTbl& operator=( const HashTbl& other){
                 clear();
-                for(unsigned int i = 0; i <= other.m_size; i++){
+                for(unsigned int i = 0; i < other.m_size; i++){
                     for(auto it=other.m_data_table[i].begin(); it!=other.m_data_table[i].end(); it++){
                         insert(it->m_key, it->m_data);
                     }
@@ -86,11 +84,11 @@ namespace MyHashTable {
             /// Atribui os elementos de uma lista inicializadora a lista
             HashTbl& operator=( const std::initializer_list< entry_type > & ilist){
                 clear();
-                for(unsigned int i=0; i <= ilist.size(); i++){
-                    for(auto it=ilist.m_data_table[i].begin; it!=ilist.m_data_table[i].end(); it++){
-                        insert(it->m_key, it->m_data);
-                    }
+                
+                for(auto it=ilist.begin(); it!=ilist.end(); it++){
+                    insert(it->m_key, it->m_data);
                 }
+          
                 return *this;
             }
             virtual ~HashTbl(){
@@ -110,27 +108,29 @@ namespace MyHashTable {
              */
             bool insert( const KeyType & k_, const DataType & d_){
                 // calcular fator de carga
-                auto loadFactor = (m_count / m_size);
+                auto loadFactor = ((float)m_count / (float)m_size);
+                
                 if( loadFactor >= 1.0){ rehash(); }
-
+                
                 KeyHash hashFunc;
                 KeyEqual equalFunc;
                 entry_type new_entry (k_, d_);//criar nova entrada p/ tabela
                 
                 auto end = hashFunc(k_)%m_size;
-                if(!m_data_table[end].empty()){
+                
+                if(!m_data_table[end].empty()){//lista do indice `end` não eh vazia
                     for(auto i=m_data_table[end].begin(); i != m_data_table[end].end(); i++){
-                        if(equalFunc(i->m_key, new_entry.m_key)){
-                            i->m_data = new_entry.m_data;
+                        if(equalFunc(i->m_key, new_entry.m_key)){//Se existir chave igual a `new_entry.m_key`
+                            i->m_data = new_entry.m_data; //
                             return false;
                         }
                     }
                 }
 
-                //Não existe nenhum elemento no indice ou nenhum elemento corresponde a chave `k_`
+                //Lista do indice `end` eh vazia ou nenhum elemento corresponde a chave `new_entry.m_key`
                 m_count++;
                 m_data_table[end].push_front(new_entry);
-
+                
                 return true;
             }
             //! Recupera em `d_` a informação associada a chave `k_`
@@ -147,7 +147,7 @@ namespace MyHashTable {
 
                 for(auto it=m_data_table[end].begin(); it != m_data_table[end].end(); it++){
                     if(equalFunc(k_, it->m_key)){
-                        d_=it->m_data;
+                        d_=it->m_data;//atualiza `d_` com valor correspondente a chave `k_`
                         return true;
                     }
                 }
@@ -164,6 +164,8 @@ namespace MyHashTable {
                 KeyEqual equalFunc;
 
                 auto end = hashFunc(k_)%m_size;
+
+                //variável auxiliar p/ apagar elemento da tabela usando o `erase_after()` de `list_type`
                 auto aux = m_data_table[end].before_begin();
                 
                 for(auto it=m_data_table[end].begin(); it!= m_data_table[end].end(); it++){
@@ -172,15 +174,16 @@ namespace MyHashTable {
                         m_count--;
                         return true;
                     }
-                    ++aux;
+                    aux++;
                 }
                 return false;
 
             }
             /// Limpa toda a memória associada às listas de colisão da tabela
             void clear(){
-                for(size_type i=0; i<m_size; i++){
-                    m_data_table[i].clear();
+                /// Percorre cada indice e apagar toda a lista associada ao indice
+                for(unsigned int i=0; i<m_size; i++){
+                    m_data_table[i].clear();//método `clear` é da `list_type`
                 }
                 
                 m_count=0;
@@ -228,7 +231,8 @@ namespace MyHashTable {
                         return i->m_data;
                     }
                 }
-                DataType d_;
+                //chave não está na tabela
+                DataType d_; //instancia novo `DataType`
                 insert(k_, d_);
 
                 return at(k_);
@@ -283,8 +287,9 @@ namespace MyHashTable {
                 if(n <= 1) { return false; }
 
                 for(unsigned int i=2; i<n; i++){
-                    if(n%i == 0){ 
-                        return false;//existe mais de dois divisores
+                    if(n%i == 0){
+                        //existe mais de dois divisores, pois o laço inicia em 2 e vai até n-1 
+                        return false;
                     }
                 }
                 return true;//apenas dois divisores
@@ -307,6 +312,7 @@ namespace MyHashTable {
                 unsigned int new_size = next_prime(m_size*2);
                 list_type *new_table = new list_type[new_size];
 
+                // Copiando os dados de `m_data_table` para `new_table`
                 for(unsigned int i=0; i<m_size; i++){
                     for(auto it=m_data_table[i].begin(); it != m_data_table[i].end(); it++){
                         entry_type new_entry (it->m_key, it->m_data);
@@ -314,9 +320,9 @@ namespace MyHashTable {
                         new_table[end].push_front(new_entry);
                     }
                 }
-                delete [] m_data_table;
-                m_data_table = new_table;
-                m_size = new_size;
+                delete [] m_data_table; //apagando `m_data_table`
+                m_data_table = new_table; // `m_data_table` aponta para `new_table`
+                m_size = new_size; // atualizando tamanho da tabela
             }
             
         private:
