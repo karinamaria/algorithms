@@ -42,7 +42,7 @@ namespace MyHashTable {
             //----------------------------------------------------------------------
             /// Construtor Padrão
             explicit HashTbl( int TableSz_ = DEFAULT_SIZE ){
-                m_size = next_prime(TableSz_);
+                m_size = nextPrime(TableSz_);
                 m_count = 0;
                 m_data_table = new list_type[m_size];
 
@@ -121,7 +121,7 @@ namespace MyHashTable {
                 if(!m_data_table[end].empty()){//lista do indice `end` não eh vazia
                     for(auto i=m_data_table[end].begin(); i != m_data_table[end].end(); i++){
                         if(equalFunc(i->m_key, new_entry.m_key)){//Se existir chave igual a `new_entry.m_key`
-                            i->m_data = new_entry.m_data; //
+                            i->m_data = new_entry.m_data; 
                             return false;
                         }
                     }
@@ -283,7 +283,7 @@ namespace MyHashTable {
             //== Métodos para buscar próximo número primo
             //----------------------------------------------------------------------
             /// Retorna `true`, se o nº eh primo. Caso contrário, retorna `false`
-            bool is_prime(unsigned int n){
+            bool isPrime(unsigned int n){
                 if(n <= 1) { return false; }
 
                 for(unsigned int i=2; i<n; i++){
@@ -295,8 +295,8 @@ namespace MyHashTable {
                 return true;//apenas dois divisores
             }
             /// Retorna o primeiro nº primeiro maior ou igual a `n`
-            unsigned int next_prime(unsigned int n){
-                while(!is_prime(n)){
+            unsigned int nextPrime(unsigned int n){
+                while(!isPrime(n)){
                     n++;
                 }
                 return n;
@@ -309,7 +309,7 @@ namespace MyHashTable {
             void rehash(){
                 KeyHash hashFunc;
 
-                unsigned int new_size = next_prime(m_size*2);
+                unsigned int new_size = nextPrime(m_size*2);
                 list_type *new_table = new list_type[new_size];
 
                 // Copiando os dados de `m_data_table` para `new_table`
